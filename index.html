@@ -3,90 +3,180 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ATT-SERVICE | รวมเครื่องมือคำนวณวิศวกรรม</title>
+<title>ATT-SERVICE | เข้าสู่ระบบ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', 'Tahoma', sans-serif;
-    background: #0f172a;
-    color: #e2e8f0;
+  :root{
+    --bg: #0e1a24;
+    --bg-grid: #14263380;
+    --panel: #16273a;
+    --line: #2e4a61;
+    --line-strong: #3f6a89;
+    --blue: #4fa8e0;
+    --blue-bright: #7ec4ef;
+    --text: #eaf2f8;
+    --muted: #7f9cb3;
+    --red: #e05c5c;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+  body{
+    font-family:'IBM Plex Sans Thai','IBM Plex Mono',sans-serif;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--text);
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 20px;
   }
-  .container {
-    max-width: 600px;
+  .sheet{
     width: 100%;
+    max-width: 380px;
+    border: 1.5px solid var(--line-strong);
+    background: linear-gradient(180deg, #101f2b 0%, #0e1a24 100%);
+    position: relative;
+    padding: 34px 30px;
   }
-  h1 {
-    font-size: 28px;
+  .sheet::before{
+    content:"";
+    position:absolute; inset:8px;
+    border: 1px solid var(--line);
+    pointer-events:none;
+  }
+  .corner{ position:absolute; width:14px; height:14px; z-index:2; }
+  .corner.tl{ top:-1px; left:-1px; border-top:2px solid var(--blue-bright); border-left:2px solid var(--blue-bright); }
+  .corner.tr{ top:-1px; right:-1px; border-top:2px solid var(--blue-bright); border-right:2px solid var(--blue-bright); }
+  .corner.bl{ bottom:-1px; left:-1px; border-bottom:2px solid var(--blue-bright); border-left:2px solid var(--blue-bright); }
+  .corner.br{ bottom:-1px; right:-1px; border-bottom:2px solid var(--blue-bright); border-right:2px solid var(--blue-bright); }
+
+  .label-row{
+    font-family:'IBM Plex Mono',monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    text-align:center;
+  }
+  h1{
+    font-family:'IBM Plex Mono',monospace;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align:center;
+  }
+  h1 span{ color: var(--blue-bright); }
+  .subtitle{
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 6px;
+    text-align:center;
+    margin-bottom: 28px;
+  }
+  label{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-transform: uppercase;
     margin-bottom: 8px;
-    color: #f8fafc;
   }
-  p.subtitle {
-    color: #94a3b8;
-    margin-bottom: 32px;
+  #pw{
+    width:100%;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-family:'IBM Plex Mono',monospace;
     font-size: 15px;
+    letter-spacing: 2px;
+    padding: 12px 14px;
+    outline:none;
+    transition: border-color .15s;
   }
-  .link-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .link-list a {
-    display: block;
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 10px;
-    padding: 18px 20px;
-    color: #f1f5f9;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 500;
-    transition: background 0.15s, border-color 0.15s, transform 0.1s;
-  }
-  .link-list a:hover {
-    background: #273449;
-    border-color: #64748b;
-    transform: translateX(4px);
-  }
-  .link-list a span.desc {
-    display: block;
+  #pw:focus{ border-color: var(--blue); }
+  button{
+    width:100%;
+    margin-top: 16px;
+    background: var(--blue);
+    border: 1px solid var(--blue);
+    color: #06141d;
+    font-family:'IBM Plex Mono',monospace;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     font-size: 13px;
-    color: #94a3b8;
-    font-weight: 400;
-    margin-top: 4px;
+    padding: 12px;
+    cursor:pointer;
+    transition: background .15s;
   }
-  footer {
-    margin-top: 40px;
-    text-align: center;
-    color: #64748b;
-    font-size: 13px;
+  button:hover{ background: var(--blue-bright); border-color: var(--blue-bright); }
+  .error{
+    color: var(--red);
+    font-family:'IBM Plex Mono',monospace;
+    font-size: 12px;
+    text-align:center;
+    margin-top: 14px;
+    display:none;
+  }
+  .error.show{ display:block; }
+  footer{
+    text-align:center;
+    padding-top: 22px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
   }
 </style>
 </head>
 <body>
-  <div class="container">
-    <h1>ATT-SERVICE</h1>
-    <p class="subtitle">รวมเครื่องมือคำนวณและออกแบบทางวิศวกรรม</p>
-    <ul class="link-list">
-      <li>
-        <a href="Earthquake%20Calculator%20(Floors).html">
-          Earthquake Calculator (Floors)
-          <span class="desc">คำนวณแรงแผ่นดินไหวตามจำนวนชั้น</span>
-        </a>
-      </li>
-      <li>
-        <a href="RC%20Continuous%20Beam%20Design.html">
-          RC Continuous Beam Design
-          <span class="desc">ออกแบบคานต่อเนื่องคอนกรีตเสริมเหล็ก</span>
-        </a>
-      </li>
-    </ul>
-    <footer>© 2026 ATT-SERVICE</footer>
+  <div class="sheet">
+    <div class="corner tl"></div><div class="corner tr"></div>
+    <div class="corner bl"></div><div class="corner br"></div>
+
+    <div class="label-row">RESTRICTED ACCESS</div>
+    <h1>ATT<span>-</span>SERVICE</h1>
+    <div class="subtitle">กรอกรหัสผ่านเพื่อเข้าใช้งานเครื่องมือ</div>
+
+    <label for="pw">รหัสผ่าน</label>
+    <input id="pw" type="password" placeholder="••••••••" autocomplete="off">
+    <button id="enter">เข้าสู่ระบบ</button>
+    <div class="error" id="err">รหัสผ่านไม่ถูกต้อง ลองใหม่อีกครั้ง</div>
+
+    <footer>© 2026 ATT-SERVICE — ENGINEERING TOOLKIT</footer>
   </div>
+
+<script>
+  const PW_HASH = "b5d56b4d52b95b7e27907fe90660b107a79e6a9f7ae18a39b0f448a649722f53";
+
+  async function sha256(text){
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  async function tryLogin(){
+    const val = document.getElementById('pw').value;
+    const hash = await sha256(val);
+    if(hash === PW_HASH){
+      sessionStorage.setItem('att_auth','1');
+      window.location.href = 'portal.html';
+    } else {
+      document.getElementById('err').classList.add('show');
+    }
+  }
+
+  document.getElementById('enter').addEventListener('click', tryLogin);
+  document.getElementById('pw').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') tryLogin();
+  });
+</script>
 </body>
 </html>
