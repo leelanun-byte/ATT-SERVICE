@@ -211,6 +211,9 @@
   }
   .card .tag.seismic{ color: var(--blue-bright); border-color:#1c3a4d; background:#0f202b; }
   .card .tag.sketchup{ color: #9dd68c; border-color:#2a4520; background:#152410; }
+  .card .tag.roof{ color: #e08f6b; border-color:#4a2e1c; background:#241710; }
+  .card .tag.steel{ color: #b8c4cf; border-color:#3a4650; background:#1c252c; }
+  .card .tag.concrete{ color: #c9a6e0; border-color:#3a2c4a; background:#1e1524; }
   .card .arrow{
     color: var(--muted);
     font-family:'IBM Plex Mono',monospace;
@@ -272,6 +275,9 @@
         <div class="chip" data-cat="structural">โครงสร้าง</div>
         <div class="chip" data-cat="seismic">แผ่นดินไหว</div>
         <div class="chip" data-cat="sketchup">Extensions SketchUp</div>
+        <div class="chip" data-cat="roof">ออกแบบโครงหลังคา</div>
+        <div class="chip" data-cat="steel">ออกแบบเหล็กรูปพรรณ</div>
+        <div class="chip" data-cat="concrete">โครงสร้างคอนกรีต</div>
       </div>
     </div>
 
@@ -303,6 +309,33 @@
         <span class="tag sketchup">SketchUp</span>
         <span class="arrow">⬇</span>
       </a>
+      <div class="card" data-cat="roof" data-name="ออกแบบโครงหลังคา roof structure" style="cursor:default; opacity:.6;">
+        <span class="idx">04</span>
+        <span class="body">
+          <span class="name">ออกแบบโครงหลังคา</span>
+          <span class="desc">เครื่องมือออกแบบโครงหลังคา — เร็วๆ นี้</span>
+        </span>
+        <span class="tag roof">โครงหลังคา</span>
+        <span class="arrow">—</span>
+      </div>
+      <div class="card" data-cat="steel" data-name="ออกแบบเหล็กรูปพรรณ steel design" style="cursor:default; opacity:.6;">
+        <span class="idx">05</span>
+        <span class="body">
+          <span class="name">ออกแบบเหล็กรูปพรรณ</span>
+          <span class="desc">เครื่องมือออกแบบโครงสร้างเหล็กรูปพรรณ — เร็วๆ นี้</span>
+        </span>
+        <span class="tag steel">เหล็กรูปพรรณ</span>
+        <span class="arrow">—</span>
+      </div>
+      <div class="card" data-cat="concrete" data-name="โครงสร้างคอนกรีต concrete structure" style="cursor:default; opacity:.6;">
+        <span class="idx">06</span>
+        <span class="body">
+          <span class="name">โครงสร้างคอนกรีต</span>
+          <span class="desc">เครื่องมือออกแบบโครงสร้างคอนกรีต — เร็วๆ นี้</span>
+        </span>
+        <span class="tag concrete">คอนกรีต</span>
+        <span class="arrow">—</span>
+      </div>
     </div>
     <div class="empty" id="empty">ไม่พบเครื่องมือที่ค้นหา</div>
 
