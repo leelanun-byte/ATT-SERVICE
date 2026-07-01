@@ -78,7 +78,7 @@
     font-size: 13px;
     margin-top: 6px;
     text-align:center;
-    margin-bottom: 28px;
+    margin-bottom: 26px;
   }
   label{
     display:block;
@@ -88,23 +88,25 @@
     color: var(--muted);
     text-transform: uppercase;
     margin-bottom: 8px;
+    margin-top: 16px;
   }
-  #pw{
+  label:first-of-type{ margin-top:0; }
+  input{
     width:100%;
     background: var(--panel);
     border: 1px solid var(--line);
     color: var(--text);
     font-family:'IBM Plex Mono',monospace;
     font-size: 15px;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     padding: 12px 14px;
     outline:none;
     transition: border-color .15s;
   }
-  #pw:focus{ border-color: var(--blue); }
+  input:focus{ border-color: var(--blue); }
   button{
     width:100%;
-    margin-top: 16px;
+    margin-top: 20px;
     background: var(--blue);
     border: 1px solid var(--blue);
     color: #06141d;
@@ -144,21 +146,28 @@
 
     <div class="label-row">RESTRICTED ACCESS</div>
     <h1>ATT<span>-</span>SERVICE</h1>
-    <div class="subtitle">กรอกรหัสผ่านเพื่อเข้าใช้งานเครื่องมือ</div>
+    <div class="subtitle">เข้าสู่ระบบเพื่อใช้งานเครื่องมือ</div>
+
+    <label for="username">ชื่อผู้ใช้</label>
+    <input id="username" type="text" placeholder="username" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">
 
     <label for="pw">รหัสผ่าน</label>
-    <div style="position:relative;">
-      <input id="pw" type="password" placeholder="••••••••" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" style="padding-right:70px;">
-      <span id="toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);cursor:pointer;letter-spacing:1px;">แสดง</span>
-    </div>
+    <input id="pw" type="password" placeholder="••••••••" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">
+
     <button id="enter">เข้าสู่ระบบ</button>
-    <div class="error" id="err">รหัสผ่านไม่ถูกต้อง ลองใหม่อีกครั้ง</div>
+    <div class="error" id="err">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</div>
 
     <footer>© 2026 ATT-SERVICE — ENGINEERING TOOLKIT</footer>
   </div>
 
 <script>
-  const PW_HASH = "b5d56b4d52b95b7e27907fe90660b107a79e6a9f7ae18a39b0f448a649722f53";
+  // รายชื่อผู้ใช้ที่อนุญาต — เพิ่ม/ลบ/แก้ไขได้ในนี้เลย
+  // วิธีสร้าง hash รหัสผ่านใหม่: เปิด Console เบราว์เซอร์ แล้วพิมพ์
+  // crypto.subtle.digest('SHA-256', new TextEncoder().encode('รหัสผ่านที่ต้องการ')).then(b=>console.log(Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')))
+  const USERS = {
+    "admin":     "72bce3f825ec2d0edaffb18554e60985e66b7291ab3c4aec9f34a89c42b7363e", // Truss6763!
+    "engineer1": "0c355a42beb4c0f7b7b02d5ca0d464398c097611843579eba1d44a72d1fdb071"  // Sheet2448!
+  };
 
   async function sha256(text){
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
@@ -166,26 +175,21 @@
   }
 
   async function tryLogin(){
-    const val = document.getElementById('pw').value;
-    const hash = await sha256(val);
-    if(hash === PW_HASH){
+    const uname = document.getElementById('username').value.trim();
+    const pw = document.getElementById('pw').value;
+    const hash = await sha256(pw);
+    if(USERS[uname] && USERS[uname] === hash){
       sessionStorage.setItem('att_auth','1');
+      sessionStorage.setItem('att_user', uname);
       window.location.href = 'portal.html';
     } else {
       document.getElementById('err').classList.add('show');
     }
   }
 
-  document.getElementById('toggle').addEventListener('click', () => {
-    const pw = document.getElementById('pw');
-    const t = document.getElementById('toggle');
-    if(pw.type === 'password'){ pw.type = 'text'; t.textContent = 'ซ่อน'; }
-    else { pw.type = 'password'; t.textContent = 'แสดง'; }
-  });
-
   document.getElementById('enter').addEventListener('click', tryLogin);
-  document.getElementById('pw').addEventListener('keydown', (e) => {
-    if(e.key === 'Enter') tryLogin();
+  document.querySelectorAll('input').forEach(el => {
+    el.addEventListener('keydown', (e) => { if(e.key === 'Enter') tryLogin(); });
   });
 </script>
 </body>

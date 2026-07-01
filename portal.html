@@ -210,6 +210,7 @@
     white-space:nowrap;
   }
   .card .tag.seismic{ color: var(--blue-bright); border-color:#1c3a4d; background:#0f202b; }
+  .card .tag.sketchup{ color: #9dd68c; border-color:#2a4520; background:#152410; }
   .card .arrow{
     color: var(--muted);
     font-family:'IBM Plex Mono',monospace;
@@ -256,7 +257,7 @@
       <div class="meta">
         SHEET <b>1 / 1</b><br>
         SCALE <b>N.T.S.</b><br>
-        REV <b>2026.07</b><br>
+        USER <b id="userLabel">-</b><br>
         <a href="#" id="logout" style="color:var(--muted);text-decoration:underline;">ออกจากระบบ</a>
       </div>
     </div>
@@ -270,6 +271,7 @@
         <div class="chip active" data-cat="all">ทั้งหมด</div>
         <div class="chip" data-cat="structural">โครงสร้าง</div>
         <div class="chip" data-cat="seismic">แผ่นดินไหว</div>
+        <div class="chip" data-cat="sketchup">Extensions SketchUp</div>
       </div>
     </div>
 
@@ -292,6 +294,15 @@
         <span class="tag">โครงสร้าง</span>
         <span class="arrow">→</span>
       </a>
+      <div class="card" data-cat="sketchup" data-name="extensions sketchup ปลั๊กอิน" style="cursor:default; opacity:.6;">
+        <span class="idx">03</span>
+        <span class="body">
+          <span class="name">Extensions SketchUp</span>
+          <span class="desc">พื้นที่สำหรับไฟล์ปลั๊กอิน SketchUp — เร็วๆ นี้</span>
+        </span>
+        <span class="tag sketchup">SketchUp</span>
+        <span class="arrow">—</span>
+      </div>
     </div>
     <div class="empty" id="empty">ไม่พบเครื่องมือที่ค้นหา</div>
 
@@ -304,6 +315,8 @@
   }
 
   const search = document.getElementById('search');
+  const userLabelEl = document.getElementById('userLabel');
+  if (userLabelEl) userLabelEl.textContent = sessionStorage.getItem('att_user') || '-';
   const cards = Array.from(document.querySelectorAll('.card'));
   const chips = Array.from(document.querySelectorAll('.chip'));
   const empty = document.getElementById('empty');
