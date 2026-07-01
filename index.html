@@ -147,7 +147,10 @@
     <div class="subtitle">กรอกรหัสผ่านเพื่อเข้าใช้งานเครื่องมือ</div>
 
     <label for="pw">รหัสผ่าน</label>
-    <input id="pw" type="password" placeholder="••••••••" autocomplete="off">
+    <div style="position:relative;">
+      <input id="pw" type="password" placeholder="••••••••" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" style="padding-right:70px;">
+      <span id="toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);cursor:pointer;letter-spacing:1px;">แสดง</span>
+    </div>
     <button id="enter">เข้าสู่ระบบ</button>
     <div class="error" id="err">รหัสผ่านไม่ถูกต้อง ลองใหม่อีกครั้ง</div>
 
@@ -172,6 +175,13 @@
       document.getElementById('err').classList.add('show');
     }
   }
+
+  document.getElementById('toggle').addEventListener('click', () => {
+    const pw = document.getElementById('pw');
+    const t = document.getElementById('toggle');
+    if(pw.type === 'password'){ pw.type = 'text'; t.textContent = 'ซ่อน'; }
+    else { pw.type = 'password'; t.textContent = 'แสดง'; }
+  });
 
   document.getElementById('enter').addEventListener('click', tryLogin);
   document.getElementById('pw').addEventListener('keydown', (e) => {
