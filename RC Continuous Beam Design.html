@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โปรแกรมออกแบบคาน ค.ส.ล. ต่อเนื่อง 3 ช่วงและคานยื่น จัดเหล็ก 2 ชั้น (WSD)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Sarabun -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+        }
+        @media print {
+            body {
+                background-color: #ffffff;
+                color: #000000;
+                font-size: 8.5px;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-container {
+                width: 100%;
+                max-width: 100%;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                background: transparent !important;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            .print-card {
+                border: 1px solid #cbd5e1 !important;
+                padding: 5px !important;
+                margin-bottom: 5px !important;
+                border-radius: 4px !important;
+                box-shadow: none !important;
+                background-color: #fff !important;
+            }
+            h1, h2, h3 {
+                color: #000000 !important;
+            }
+            table {
+                font-size: 8px !important;
+            }
+            th, td {
+                padding: 1px 2px !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <!-- Header (No Print) -->
+    <header class="bg-gradient-to-r from-slate-800 via-cyan-900 to-slate-900 text-white shadow-md no-print">
+        <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <svg class="w-9 h-9 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                <div>
+                    <h1 class="text-base font-bold tracking-tight">RC Beam Continuous Pro <span class="text-xs bg-cyan-500 text-white px-1.5 py-0.2 rounded ml-1">v5.0 (3 Spans & Point Loads)</span></h1>
+                    <p class="text-[10px] text-slate-300">ระบบออกแบบคาน ค.ส.ล. ต่อเนื่อง 3 ช่วง + คานยื่น จัดเหล็ก 2 ชั้น และใส่ Point Load ได้ 2 จุดต่อช่วง</p>
+                </div>
+            </div>
+            <div class="mt-3 md:mt-0 flex space-x-2">
+                <button onclick="window.print()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow flex items-center transition-all duration-150">
+                    <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                    </svg>
+                    พิมพ์รายงานการคำนวณ (A4)
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-4 print-container max-w-7xl">
+        
+        <!-- ข้อมูลโครงการ -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-4 print-card">
+            <h2 class="text-xs font-semibold text-slate-700 mb-2 border-b pb-1 flex items-center">
+                <span class="w-2 h-2 bg-cyan-600 rounded-full mr-2"></span>
+                ข้อมูลรายละเอียดโครงการ & วิศวกรผู้ควบคุมงาน
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div>
+                    <label class="block text-[9px] font-semibold text-slate-500 mb-0.5">ชื่อโครงการ</label>
+                    <input type="text" id="projName" value="โครงการก่อสร้างอาคารพักอาศัย ค.ส.ล." class="w-full text-xs px-2 py-0.5 border rounded border-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 bg-slate-50 focus:bg-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-[9px] font-semibold text-slate-500 mb-0.5">สัญลักษณ์คานหลัก</label>
+                    <input type="text" id="beamMark" value="B1 - คานต่อเนื่องรับพื้น" class="w-full text-xs px-2 py-0.5 border rounded border-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 bg-slate-50 focus:bg-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-[9px] font-semibold text-slate-500 mb-0.5">วิศวกรผู้ออกแบบ</label>
+                    <input type="text" id="engineerName" value="วิศวกรโครงสร้างโยธา" class="w-full text-xs px-2 py-0.5 border rounded border-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 bg-slate-50 focus:bg-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-[9px] font-semibold text-slate-500 mb-0.5">หน่วยใช้งาน</label>
+                    <select id="unitSystem" onchange="toggleUnitSystem()" class="w-full text-xs px-1.5 py-0.5 border rounded border-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 bg-slate-50 focus:bg-white transition-all">
+                        <option value="thai">หน่วยเมตริกไทย (ksc, kg, cm, m)</option>
+                        <option value="si">หน่วยสากล SI (MPa, kN, mm, m)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            
+            <!-- COLUMN 1: แผงควบคุมและป้อนข้อมูล (ซ่อนตอนพิมพ์) -->
+            <div class="lg:col-span-4 space-y-4 no-print">
+                
+                <!-- 1. มิติช่วงคาน & แรงกระทำ -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xs font-semibold text-slate-800 mb-2 border-b pb-1 flex items-center justify-between">
+                        <span>1. กำหนดมิติช่วงคาน 3 ช่วง & คานยื่น</span>
+                        <span class="text-[9px] bg-cyan-100 text-cyan-800 px-1.5 py-0.5 rounded">3 Spans & Cant</span>
+                    </h3>
+                    <div class="space-y-3">
+                        <!-- ช่วง 1 -->
+                        <div class="p-2 bg-slate-50 rounded border border-slate-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-[10px] font-bold text-cyan-700">ช่วงที่ 1 (Span 1)</span>
+                                <input type="text" id="span1Name" value="B1-1 (ช่วงที่ 1)" class="text-[9px] px-1 border rounded w-32 font-bold text-slate-700" oninput="calculateBeam()">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[8px] text-slate-500">ความยาว L1 (ม.)</label>
+                                    <input type="number" id="L1" value="4.0" step="0.1" min="1" oninput="calculateBeam()" class="w-full text-xs px-2 py-0.5 border rounded">
+                                </div>
+                                <div>
+                                    <label class="block text-[8px] text-slate-500">น้ำหนักบรรทุก w1 (กก./ม.)</label>
+                                    <input type="number" id="w1" value="1200" step="50" min="0" oninput="calculateBeam()" class="w-full text-xs px-2 py-0.5 border rounded">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ช่วง 2 -->
+                        <div class="p-2 bg-slate-50 rounded border border-slate-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-[10px] font-bold text-cyan-700">ช่วงที่ 2 (Span 2)</span>
+                                <input type="text" id="span2Name" value="B1-2 (ช่วงที่ 2)" class="text-[9px] px-1 border rounded w-32 font-bold text-slate-700" oninput="calculateBeam()">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[8px] text-slate-500">ความยาว L2 (ม.)</label>
+                                    <input type="number" id="L2" value="4.5" step="0.1" min="1" oninput="calculateBeam()" class="w-full text-xs px-2 py-0.5 border rounded">
+                                </div>
+                                <div>
+                                    <label class="block text-[8px] text-slate-500">น้ำหนักบรรทุก w2 (กก./ม.)</label>
+                                    <input type="number" id="w2" value="1200" step="50" min="0" oninput="calculateBeam()" class="w-full text-xs px-2 py-0.5 border rounded">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ช่วง 3 -->
+                        <div class="p-2 bg-slate-50 rounded border border-slate-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-[10px] font-bold text-cyan-700">ช่วงที่ 3 (Span 3)</span>
+                                <input type="text" id="span3Name" value="B1-3 (ช่วงที่ 3)" class="text-[9px] px-1 border rounded w-32 font-bold text-slate-700" oninput="calculateBeam()">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[8px] text-slate-500">ความยาว L3 (ม.)</label>
+                                    <input type="number" id="L3" value="4.0" step="0.1" min="1" oninput="calculateBeam()" class="w-full text-xs px-2 py-0.5 border rounded">
+                                </div>
+                                <div>
+                                    <label class="block text-[8px] text-slate-500">น้ำหนักบรรทุก w3 (กก./ม.)</label>
+                                    <input type="number" id="w3" value="1200" step="50" min="0" oninput="calculateBeam()" class="w-full text-xs px-2 py-0.5 border rounded">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- คานยื่น -->
+                        <div class="p-2 bg-slate-50 rounded border border-slate-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-[10px] font-bold text-amber-700">คานยื่นขวา (Cantilever)</span>
+                                <div class="flex items-center space-x-2">
+                                    <input type="text" id="cantName" value="B1-C (คานยื่น)" class="text-[9px] px-1 border rounded w-20 font-bold text-amber-700" oninput="calculateBeam()">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="hasCantilever" checked onchange="toggleCantilever()" class="sr-only peer">
+                                        <div class="w-7 h-4 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-amber-600 relative"></div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="cantileverInputs" class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[8px] text-slate-500">ความยาว Lc (ม.)</label>
+                                    <input type="number" id="Lc" value="1.2" step="0.1" min="0.1" oninput="calculateBeam()" class="w-full text-xs px-2 py-0.5 border rounded">
+                                </div>
+                                <div>
+                                    <label class="block text-[8px] text-slate-500">น้ำหนักบรรทุก wc (กก./ม.)</label>
+                                    <input type="number" id="wc" value="1000" step="50" min="0" oninput="calculateBeam()" class="w-full text-xs px-2 py-0.5 border rounded">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Point Loads (แรงกระทำเป็นจุด) สูงสุด 2 จุดต่อช่วง -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xs font-semibold text-slate-800 mb-2 border-b pb-1 flex items-center justify-between">
+                        <span>2. แรงกระทำเป็นจุด (Point Loads - Max 2 per Span)</span>
+                        <span class="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">Concentrated</span>
+                    </h3>
+                    <div class="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+                        <!-- Span 1 Point Loads -->
+                        <div class="p-2 bg-slate-50 rounded border">
+                            <span class="text-[9px] font-bold text-cyan-800 block mb-1">Point Loads บนช่วงที่ 1</span>
+                            <div class="grid grid-cols-2 gap-1.5 text-[9px] mb-1">
+                                <div>
+                                    <span class="text-slate-500">จุดที่ 1 P1 (kg) / ระยะ a1 (m)</span>
+                                    <div class="flex space-x-1 mt-0.5">
+                                        <input type="number" id="p1_1" value="500" step="50" class="w-1/2 border rounded px-1 py-0.2" oninput="calculateBeam()">
+                                        <input type="number" id="a1_1" value="1.5" step="0.1" class="w-1/2 border rounded px-1 py-0.2" oninput="calculateBeam()">
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-slate-500">จุดที่ 2 P2 (kg) / ระยะ a2 (m)</span>
+                                    <div class="flex space-x-1 mt-0.5">
+                                        <input type="number" id="p1_2" value="0" step="50" class="w-1/2 border rounded px-1 py-0.2" oninput="calculateBeam()">
+                                        <input type="number" id="a1_2" value="2.5" step="0.1" class="w-1/2 border rounded px-1 py-0.2" oninput="calculateBeam()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Span 2 Point Loads -->
+                        <div class="p-2 bg-slate-50 rounded border">
+                            <span class="text-[9px] font-bold text-cyan-800 block mb-1">Point Loads บนช่วงที่ 2</span>
+                            <div class="grid grid-cols-2 gap-1.5 text-[9px] mb-1">
+                                <div>
+                                    <span class="text-slate-500">จุดที่ 1 P1 (kg) / ระยะ a1 (m)</span>
+                                    <div class="flex space-x-1 mt-0.5">
+                                        <input type="number" id="p2_1" value="0" step="50" class="w-1/2 border rounded px-1 py-0.2" oninput="calculateBeam()">
+                                        <input type="number" id="a2_1" value="1.5" step="0.1" class="w-1/2 border rounded px-1 py-0.2" oninput="calculateBeam()">
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-slate-500">จุดที่ 2 P2 (kg) / ระยะ a2 (m)</span>
+                                    <div class="flex space-x-1 mt-0.5">
+                                        <input type="number" id="p2_2" value="0" step="50" class="w-1/2 border rounded px-1 py-0.2" oninput="calculateBeam()">
+                                        <input type="number" id="a2_2" value="3.0" step="0.1" class="w-1/2 border rounded px-1 py-0.2" oninput="calculateBeam()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Span 3 Point Loads -->
+                        <div class="p-2 bg-slate-50 rounded border">
+                            <span class="text-[9px] font-bold text-cyan-800 block mb-1">Point Loads บนช่วงที่ 3</span>
+                            <div class="grid grid-cols-2 gap-1.5 text-[9px] mb-1">
+                                <div>
+                                    <span class="text-slate-500">จุดที่ 1 P1 (kg) / ระยะ a1 (m)</span>
+                                    <div class="flex space-x-1 mt-0.5">
+                                        <input type="number" id="p3_1" value="0" step="50" class="w-1/2 border rounded px-1 py-0.2" oninput="calculateBeam()">
+                                        <input type="number" id="a3_1" value="2.0" step="0.1" class="w-1/2 border rounded px-1 py-0.2" oninput="calculateBeam()">
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-slate-500">จุดที่ 2 P2 (kg) / ระยะ a2 (m)</span>
+                                    <div class="flex space-x-1 mt-0.5">
+                                        <input type="number" id="p3_2" value="0" step="50" class="w-1/2 border rounded px-1 py-0.2" oninput="calculateBeam()">
+                                        <input type="number" id="a3_2" value="3.0" step="0.1" class="w-1/2 border rounded px-1 py-0.2" oninput="calculateBeam()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. กำลังวัสดุ -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xs font-semibold text-slate-800 mb-2 border-b pb-1 flex items-center justify-between">
+                        <span>3. กำลังวัสดุ (Material Strengths)</span>
+                    </h3>
+                    <div class="space-y-2">
+                        <div>
+                            <label class="block text-[10px] text-slate-500 mb-0.5" id="lbl_fc">กำลังอัดรูปทรงกระบอก fc' (ksc)</label>
+                            <input type="number" id="fc" value="240" step="10" oninput="calculateBeam()" class="w-full text-xs px-2 py-1 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-500 mb-0.5" id="lbl_fs">หน่วยแรงดึงยอมให้เหล็กหลัก fs (ksc)</label>
+                            <input type="number" id="fs" value="1500" step="50" oninput="calculateBeam()" class="w-full text-xs px-2 py-1 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-500 mb-0.5" id="lbl_fv">หน่วยแรงดึงยอมให้เหล็กปลอก fv (ksc)</label>
+                            <input type="number" id="fv" value="1500" step="50" oninput="calculateBeam()" class="w-full text-xs px-2 py-1 border rounded">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. ขนาดหน้าตัดทั่วไป -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xs font-semibold text-slate-800 mb-2 border-b pb-1 flex items-center justify-between">
+                        <span>4. มิติหน้าตัด & เหล็กปลอก</span>
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] text-slate-500">ความกว้าง b (ซม.)</label>
+                                <input type="number" id="widthB" value="25" step="5" oninput="calculateBeam()" class="w-full text-xs px-2 py-1 border rounded">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-slate-500">ความลึกรวม h (ซม.)</label>
+                                <input type="number" id="heightH" value="50" step="5" oninput="calculateBeam()" class="w-full text-xs px-2 py-1 border rounded">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] text-slate-500">ระยะหุ้ม d' (ซม.)</label>
+                                <input type="number" id="cov" value="4.0" step="0.5" oninput="calculateBeam()" class="w-full text-xs px-2 py-1 border rounded">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-slate-500">เหล็กปลอก (Stirrup)</label>
+                                <select id="stirrupSize" onchange="calculateBeam()" class="w-full text-xs px-2 py-1 border border-slate-300 rounded bg-white">
+                                    <option value="6">RB6</option>
+                                    <option value="9" selected>RB9</option>
+                                    <option value="12">DB12</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] text-slate-500">จำนวนขาปลอก</label>
+                                <input type="number" id="stirrupLegs" value="2" min="1" max="4" oninput="calculateBeam()" class="w-full text-xs px-2 py-1 border rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. จัดเหล็ก 2 ชั้น รายหน้าตัดละเอียด -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-2 border-b pb-1">
+                        <h3 class="text-xs font-semibold text-slate-800">5. จัดเหล็กเสริม 2 ชั้น รายหน้าตัด</h3>
+                        <span class="text-[9px] bg-rose-100 text-rose-800 px-1 rounded font-bold">Double Layers</span>
+                    </div>
+                    
+                    <div class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-1">ขนาดเหล็กที่ใช้ในคาน:</label>
+                            <select id="globalBarSize" onchange="updateAllBarSizes()" class="w-full text-xs px-2 py-1 border rounded bg-slate-50">
+                                <option value="12">DB12 (As = 1.13 cm²)</option>
+                                <option value="16" selected>DB16 (As = 2.01 cm²)</option>
+                                <option value="20">DB20 (As = 3.14 cm²)</option>
+                                <option value="25">DB25 (As = 4.91 cm²)</option>
+                                <option value="28">DB28 (As = 6.16 cm²)</option>
+                            </select>
+                        </div>
+
+                        <!-- ตัวปรับแต่งแบบแยกช่วง -->
+                        <div id="sectionRebarControls" class="space-y-3">
+                            <!-- Injected by JS based on critical sections -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COLUMN 2: ผลการวิเคราะห์และแบบขยายหน้าตัด (พิมพ์แสดงผล) -->
+            <div class="lg:col-span-8 space-y-4">
+
+                <!-- 1. กราฟจำลอง SFD / BMD -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 print-card">
+                    <h3 class="text-xs font-semibold text-slate-800 mb-1 border-b pb-1 flex items-center justify-between">
+                        <span>แบบจำลองกลศาสตร์ & แผนภาพแรงเฉือน / โมเมนต์ดัด (วิเคราะห์โดย Finite Element Method)</span>
+                        <span class="text-[10px] text-slate-400 font-normal no-print">คำนวณเรียลไทม์</span>
+                    </h3>
+                    
+                    <div class="w-full overflow-x-auto">
+                        <svg id="beamSvg" class="mx-auto min-w-[700px] h-[300px] bg-slate-900 rounded-lg p-2" viewBox="0 0 850 400">
+                            <!-- Dynamic Content Rendered by JS -->
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- 2. ตาราง WSD Constants -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 print-card">
+                    <h3 class="text-xs font-semibold text-slate-800 mb-2 border-b pb-1 flex items-center">
+                        <span class="w-2 h-2 bg-emerald-600 rounded-full mr-2"></span>
+                        ค่าสัมประสิทธิ์การออกแบบ (WSD Design Parameters)
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                        <div class="p-1.5 bg-slate-50 rounded border">
+                            <p class="text-[9px] text-slate-500">Modular ratio (n)</p>
+                            <p class="font-bold text-slate-800 text-[11px]" id="val_n">10.0</p>
+                        </div>
+                        <div class="p-1.5 bg-slate-50 rounded border">
+                            <p class="text-[9px] text-slate-500">สัมประสิทธิ์แรงดึง (k)</p>
+                            <p class="font-bold text-slate-800 text-[11px]" id="val_k">0.380</p>
+                        </div>
+                        <div class="p-1.5 bg-slate-50 rounded border">
+                            <p class="text-[9px] text-slate-500">สัมประสิทธิ์คานโมเมนต์ (j)</p>
+                            <p class="font-bold text-slate-800 text-[11px]" id="val_j">0.873</p>
+                        </div>
+                        <div class="p-1.5 bg-slate-50 rounded border">
+                            <p class="text-[9px] text-slate-500">โมเมนต์ต้านทานคานเหล็กเดี่ยว (Mc)</p>
+                            <p class="font-bold text-slate-800 text-[11px]" id="val_Mc">0.00 kg-m</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. ตารางสรุปการเสริมเหล็กละเอียด 2 ชั้น พร้อมไฟเช็คสถานะ -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 print-card">
+                    <h3 class="text-xs font-semibold text-slate-800 mb-2 border-b pb-1 flex items-center justify-between">
+                        <span>ตารางเปรียบเทียบขนาดหน้าตัดและปริมาณเหล็กเสริม 2 ชั้น</span>
+                        <span class="text-[10px] bg-cyan-700 text-white px-2 py-0.5 rounded font-normal">WSD Verification</span>
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-[11px] border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                                    <th class="p-1.5 font-bold">ตำแหน่งหน้าตัดคานวิกฤต</th>
+                                    <th class="p-1.5 font-bold">โมเมนต์ดัด M</th>
+                                    <th class="p-1.5 font-bold">As Req (cm²)</th>
+                                    <th class="p-1.5 font-bold text-rose-700">จัดเหล็กบน (ชั้น 1 + ชั้น 2)</th>
+                                    <th class="p-1.5 font-bold text-emerald-700">จัดเหล็กล่าง (ชั้น 1 + ชั้น 2)</th>
+                                    <th class="p-1.5 font-bold">As จัดจริง (cm²)</th>
+                                    <th class="p-1.5 font-bold text-center">สถานะ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="designTableBody">
+                                <!-- Rendered dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. แบบขยายหน้าตัดรายละเอียด 2 ชั้น (Cross-Sections Blueprint Rendering) -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 print-card">
+                    <h3 class="text-xs font-semibold text-slate-800 mb-2 border-b pb-1 flex items-center justify-between">
+                        <span>แบบรายละเอียดรูปขยายการเสริมเหล็กจริง 2 ชั้น (Cross-Sections detailing)</span>
+                        <span class="text-[10px] text-slate-400 font-normal">มาตราส่วนแปรผันตามขนาดจริง</span>
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3" id="sectionDetailsGrid">
+                        <!-- Cross-sections dynamically injected here -->
+                    </div>
+                </div>
+
+                <!-- 5. รายการคำนวณโดยละเอียด -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 print-card page-break">
+                    <h3 class="text-xs font-semibold text-slate-800 mb-2 border-b pb-1 flex items-center justify-between">
+                        <span>รายการคำนวณและขั้นตอนทางหลักวิศวกรรมโดยละเอียด</span>
+                        <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-normal">มาตรฐาน วสท.</span>
+                    </h3>
+                    <div class="space-y-3 text-xs text-slate-700" id="calculationBreakdown">
+                        <!-- Detailed calculations breakdown -->
+                    </div>
+                </div>
+
+                <!-- 6. บล็อกลงลายมือชื่อพยานวิศวกร -->
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm print-card">
+                    <div class="grid grid-cols-2 gap-6 text-center text-xs">
+                        <div class="flex flex-col items-center py-2 border-r border-slate-100">
+                            <p class="mb-10 text-slate-500">ลงชื่อ ........................................................... ผู้จัดทำแบบ</p>
+                            <p class="font-semibold text-slate-800" id="sigDesigner">วิศวกรโครงสร้างโยธา</p>
+                            <p class="text-slate-400 text-[10px]">วิศวกรโยธาผู้ออกแบบ (สย. / ภย.)</p>
+                        </div>
+                        <div class="flex flex-col items-center py-2">
+                            <p class="mb-10 text-slate-500">ลงชื่อ ........................................................... ผู้ตรวจสอบ</p>
+                            <p class="font-semibold text-slate-800">....................................................................</p>
+                            <p class="text-slate-400 text-[10px]">ผู้ตรวจสอบแบบ / พยานรับรองผลงาน</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 text-[11px] py-4 mt-8 no-print border-t border-slate-800">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-1">ระบบคำนวณออกแบบคานต่อเนื่อง 3 ช่วงเสริมเหล็ก 2 ชั้น เพื่อตรวจสอบและต้านแรงเฉือนกับแรงดัด</p>
+            <p class="text-slate-600">&copy; 2026 RC Beam Continuous Pro v5.0 | พิมพ์จัดหน้าพอดีพรีวิวกระดาษ A4</p>
+        </div>
+    </footer>
+
+    <!-- Script Block -->
+    <script>
+        let unit_sys = "thai"; // "thai" (ksc, kg, cm) or "si" (MPa, kN, mm)
+
+        // Element references
+        const L1_in = document.getElementById("L1");
+        const L2_in = document.getElementById("L2");
+        const L3_in = document.getElementById("L3");
+        const Lc_in = document.getElementById("Lc");
+        const w1_in = document.getElementById("w1");
+        const w2_in = document.getElementById("w2");
+        const w3_in = document.getElementById("w3");
+        const wc_in = document.getElementById("wc");
+        const fc_in = document.getElementById("fc");
+        const fs_in = document.getElementById("fs");
+        const fv_in = document.getElementById("fv");
+        const width_in = document.getElementById("widthB");
+        const height_in = document.getElementById("heightH");
+        const cov_in = document.getElementById("cov");
+        const hasCantilever_in = document.getElementById("hasCantilever");
+        const stirrupSize_in = document.getElementById("stirrupSize");
+        const stirrupLegs_in = document.getElementById("stirrupLegs");
+
+        const lbl_fc = document.getElementById("lbl_fc");
+        const lbl_fs = document.getElementById("lbl_fs");
+        const lbl_fv = document.getElementById("lbl_fv");
+
+        // 8 Critical Design Sections for 3 continuous spans + cantilever
+        const rebarConfig = {
+            A: { topL1: 2, topL2: 0, botL1: 2, botL2: 0, size: 16 },
+            span1: { topL1: 2, topL2: 0, botL1: 2, botL2: 1, size: 16 },
+            B: { topL1: 2, topL2: 2, botL1: 2, botL2: 0, size: 16 },
+            span2: { topL1: 2, topL2: 0, botL1: 2, botL2: 1, size: 16 },
+            C: { topL1: 2, topL2: 2, botL1: 2, botL2: 0, size: 16 },
+            span3: { topL1: 2, topL2: 0, botL1: 2, botL2: 1, size: 16 },
+            D: { topL1: 2, topL2: 1, botL1: 2, botL2: 0, size: 16 },
+            cant: { topL1: 2, topL2: 1, botL1: 2, botL2: 0, size: 16 }
+        };
+
+        const sectionNames = {
+            A: "จุดรองรับ A (ซ้ายสุด)",
+            span1: "กลางช่วงที่ 1",
+            B: "จุดรองรับ B (เสาในช่วงที่ 1-2)",
+            span2: "กลางช่วงที่ 2",
+            C: "จุดรองรับ C (เสาในช่วงที่ 2-3)",
+            span3: "กลางช่วงที่ 3",
+            D: "จุดรองรับ D (ขวาสุด)",
+            cant: "ช่วงคานยื่น (Cantilever)"
+        };
+
+        function toggleCantilever() {
+            const container = document.getElementById("cantileverInputs");
+            if (hasCantilever_in.checked) {
+                container.style.opacity = "1";
+                container.style.pointerEvents = "auto";
+            } else {
+                container.style.opacity = "0.3";
+                container.style.pointerEvents = "none";
+            }
+            renderRebarControls();
+            calculateBeam();
+        }
+
+        function toggleUnitSystem() {
+            unit_sys = document.getElementById("unitSystem").value;
+            if (unit_sys === "thai") {
+                lbl_fc.innerText = "กำลังอัดรูปทรงกระบอก fc' (ksc)";
+                lbl_fs.innerText = "หน่วยแรงดึงยอมให้เหล็กหลัก fs (ksc)";
+                lbl_fv.innerText = "หน่วยแรงดึงยอมให้เหล็กปลอก fv (ksc)";
+                if (parseFloat(fc_in.value) < 100) {
+                    fc_in.value = Math.round(parseFloat(fc_in.value) * 10);
+                    fs_in.value = 1500;
+                    fv_in.value = 1500;
+                    w1_in.value = Math.round(parseFloat(w1_in.value) * 100);
+                    w2_in.value = Math.round(parseFloat(w2_in.value) * 100);
+                    w3_in.value = Math.round(parseFloat(w3_in.value) * 100);
+                    wc_in.value = Math.round(parseFloat(wc_in.value) * 100);
+                    // Point loads scale up
+                    ["p1_1", "p1_2", "p2_1", "p2_2", "p3_1", "p3_2"].forEach(id => {
+                        const el = document.getElementById(id);
+                        if(el) el.value = Math.round(parseFloat(el.value) * 100);
+                    });
+                }
+            } else {
+                lbl_fc.innerText = "กำลังอัดรูปทรงกระบอก fc' (MPa)";
+                lbl_fs.innerText = "หน่วยแรงดึงยอมให้เหล็กหลัก fs (MPa)";
+                lbl_fv.innerText = "หน่วยแรงดึงยอมให้เหล็กปลอก fv (MPa)";
+                if (parseFloat(fc_in.value) > 100) {
+                    fc_in.value = Math.round(parseFloat(fc_in.value) / 10);
+                    fs_in.value = 150;
+                    fv_in.value = 150;
+                    w1_in.value = (parseFloat(w1_in.value) / 100).toFixed(1);
+                    w2_in.value = (parseFloat(w2_in.value) / 100).toFixed(1);
+                    w3_in.value = (parseFloat(w3_in.value) / 100).toFixed(1);
+                    wc_in.value = (parseFloat(wc_in.value) / 100).toFixed(1);
+                    // Point loads scale down
+                    ["p1_1", "p1_2", "p2_1", "p2_2", "p3_1", "p3_2"].forEach(id => {
+                        const el = document.getElementById(id);
+                        if(el) el.value = (parseFloat(el.value) / 100).toFixed(1);
+                    });
+                }
+            }
+            calculateBeam();
+        }
+
+        function updateAllBarSizes() {
+            const size = parseInt(document.getElementById("globalBarSize").value);
+            for (let sec in rebarConfig) {
+                rebarConfig[sec].size = size;
+                const el = document.getElementById(`size_${sec}`);
+                if (el) el.value = size;
+            }
+            calculateBeam();
+        }
+
+        function renderRebarControls() {
+            const container = document.getElementById("sectionRebarControls");
+            container.innerHTML = "";
+
+            const sections = ["A", "span1", "B", "span2", "C", "span3", "D"];
+            if (hasCantilever_in.checked) {
+                sections.push("cant");
+            }
+
+            sections.forEach(sec => {
+                const config = rebarConfig[sec];
+                const sectionDiv = document.createElement("div");
+                sectionDiv.className = "p-2 bg-slate-50 rounded border border-slate-200 space-y-1.5 text-xs";
+                sectionDiv.innerHTML = `
+                    <div class="flex justify-between items-center border-b pb-0.5 mb-1 bg-cyan-50 px-1 rounded">
+                        <span class="font-bold text-cyan-800 text-[10px]">${sectionNames[sec]}</span>
+                        <select id="size_${sec}" onchange="updateSectionParam('${sec}', 'size', this.value)" class="text-[9px] border rounded bg-white px-0.5 py-0.2">
+                            <option value="12" ${config.size === 12 ? "selected" : ""}>DB12</option>
+                            <option value="16" ${config.size === 16 ? "selected" : ""}>DB16</option>
+                            <option value="20" ${config.size === 20 ? "selected" : ""}>DB20</option>
+                            <option value="25" ${config.size === 25 ? "selected" : ""}>DB25</option>
+                            <option value="28" ${config.size === 28 ? "selected" : ""}>DB28</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1.5">
+                        <!-- เหล็กบน -->
+                        <div class="space-y-1 border-r pr-1">
+                            <span class="text-[9px] font-semibold text-rose-700 block">เหล็กบน (Top)</span>
+                            <div class="flex justify-between items-center text-[9px]">
+                                <span>ชั้น 1 (ตลอด):</span>
+                                <input type="number" value="${config.topL1}" min="2" max="6" oninput="updateSectionParam('${sec}', 'topL1', this.value)" class="w-7 text-center border rounded py-0.2">
+                            </div>
+                            <div class="flex justify-between items-center text-[9px]">
+                                <span>ชั้น 2 (พิเศษ):</span>
+                                <input type="number" value="${config.topL2}" min="0" max="6" oninput="updateSectionParam('${sec}', 'topL2', this.value)" class="w-7 text-center border rounded py-0.2">
+                            </div>
+                        </div>
+                        <!-- เหล็กล่าง -->
+                        <div class="space-y-1 pl-1">
+                            <span class="text-[9px] font-semibold text-emerald-700 block">เหล็กล่าง (Bottom)</span>
+                            <div class="flex justify-between items-center text-[9px]">
+                                <span>ชั้น 1 (ตลอด):</span>
+                                <input type="number" value="${config.botL1}" min="2" max="6" oninput="updateSectionParam('${sec}', 'botL1', this.value)" class="w-7 text-center border rounded py-0.2">
+                            </div>
+                            <div class="flex justify-between items-center text-[9px]">
+                                <span>ชั้น 2 (พิเศษ):</span>
+                                <input type="number" value="${config.botL2}" min="0" max="6" oninput="updateSectionParam('${sec}', 'botL2', this.value)" class="w-7 text-center border rounded py-0.2">
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(sectionDiv);
+            });
+        }
+
+        function updateSectionParam(sec, param, val) {
+            rebarConfig[sec][param] = parseInt(val) || 0;
+            calculateBeam();
+        }
+
+        // --- FINITE ELEMENT METHOD (1D Hermite Beam Element Solver) ---
+        function solveContinuousBeamFEM(L1, L2, L3, Lc, w1, w2, w3, wc, pointLoads, hasCant) {
+            // Number of elements per span (to capture smooth shear & moments diagram with point loads)
+            const nElemSpan = 30; 
+            const nElemCant = hasCant ? 15 : 0;
+            const totalElements = nElemSpan * 3 + nElemCant;
+            const totalNodes = totalElements + 1;
+
+            // Generate nodal coordinates & support mapping
+            const xNode = [];
+            const supports = []; // Node indexes where vertical displacement is restrained
+            const spanBoundaries = [0, nElemSpan, nElemSpan * 2, nElemSpan * 3];
+
+            // Span 1
+            for (let i = 0; i <= nElemSpan; i++) {
+                xNode.push((L1 * i) / nElemSpan);
+            }
+            supports.push(0); // Support A
+            supports.push(nElemSpan); // Support B
+
+            // Span 2
+            const startX2 = L1;
+            for (let i = 1; i <= nElemSpan; i++) {
+                xNode.push(startX2 + (L2 * i) / nElemSpan);
+            }
+            supports.push(nElemSpan * 2); // Support C
+
+            // Span 3
+            const startX3 = L1 + L2;
+            for (let i = 1; i <= nElemSpan; i++) {
+                xNode.push(startX3 + (L3 * i) / nElemSpan);
+            }
+            supports.push(nElemSpan * 3); // Support D
+
+            // Cantilever
+            if (hasCant) {
+                const startXc = L1 + L2 + L3;
+                for (let i = 1; i <= nElemCant; i++) {
+                    xNode.push(startXc + (Lc * i) / nElemCant);
+                }
+            }
+
+            // Flexural stiffness EI (constant, arbitrary value for relative structural actions)
+            const EI = 1e5;
+
+            // Initialize global stiffness K (total nodes * 2) and force F (total nodes * 2)
+            const totalDOFs = totalNodes * 2;
+            const K = Array(totalDOFs).fill(0).map(() => Array(totalDOFs).fill(0));
+            const F = Array(totalDOFs).fill(0);
+
+            // Assembly elements
+            for (let e = 0; e < totalElements; e++) {
+                const n1 = e;
+                const n2 = e + 1;
+                const Le = xNode[n2] - xNode[n1];
+
+                // Determine active uniform load for this element
+                let w = 0;
+                if (e < nElemSpan) w = w1;
+                else if (e < nElemSpan * 2) w = w2;
+                else if (e < nElemSpan * 3) w = w3;
+                else w = wc;
+
+                // Local stiffness matrix
+                const kLocal = [
+                    [12 * EI / Math.pow(Le, 3),   6 * EI / Math.pow(Le, 2), -12 * EI / Math.pow(Le, 3),  6 * EI / Math.pow(Le, 2)],
+                    [ 6 * EI / Math.pow(Le, 2),   4 * EI / Le,               -6 * EI / Math.pow(Le, 2),  2 * EI / Le],
+                    [-12 * EI / Math.pow(Le, 3),  -6 * EI / Math.pow(Le, 2),  12 * EI / Math.pow(Le, 3), -6 * EI / Math.pow(Le, 2)],
+                    [ 6 * EI / Math.pow(Le, 2),   2 * EI / Le,               -6 * EI / Math.pow(Le, 2),  4 * EI / Le]
+                ];
+
+                // Equivalent nodal forces from uniform load
+                const fLocal = [
+                    -w * Le / 2,
+                    -w * Le * Le / 12,
+                    -w * Le / 2,
+                     w * Le * Le / 12
+                ];
+
+                // Map local DOFs
+                const dofMap = [n1 * 2, n1 * 2 + 1, n2 * 2, n2 * 2 + 1];
+
+                for (let i = 0; i < 4; i++) {
+                    F[dofMap[i]] += fLocal[i];
+                    for (let j = 0; j < 4; j++) {
+                        K[dofMap[i]][dofMap[j]] += kLocal[i][j];
+                    }
+                }
+            }
+
+            // Apply Point Loads using shape functions interpolation
+            pointLoads.forEach(pl => {
+                if (pl.val <= 0) return;
+                
+                // Find element where point load falls
+                let absoluteLoc = pl.loc;
+                // Clamp within beam limits
+                if (absoluteLoc < 0) absoluteLoc = 0;
+                const beamMaxX = xNode[totalNodes - 1];
+                if (absoluteLoc > beamMaxX) absoluteLoc = beamMaxX;
+
+                // Find element index
+                let eIdx = 0;
+                for (let e = 0; e < totalElements; e++) {
+                    if (absoluteLoc >= xNode[e] && absoluteLoc <= xNode[e + 1]) {
+                        eIdx = e;
+                        break;
+                    }
+                }
+
+                const n1 = eIdx;
+                const n2 = eIdx + 1;
+                const Le = xNode[n2] - xNode[n1];
+                const xi = (absoluteLoc - xNode[n1]) / Le;
+
+                // Hermite Shape functions
+                const N1 = 1 - 3 * xi * xi + 2 * Math.pow(xi, 3);
+                const N2 = xi * Math.pow(1 - xi, 2) * Le;
+                const N3 = 3 * xi * xi - 2 * Math.pow(xi, 3);
+                const N4 = xi * xi * (xi - 1) * Le;
+
+                const dofMap = [n1 * 2, n1 * 2 + 1, n2 * 2, n2 * 2 + 1];
+                const loadShares = [N1, N2, N3, N4];
+
+                for (let i = 0; i < 4; i++) {
+                    F[dofMap[i]] -= pl.val * loadShares[i]; // Downward loading
+                }
+            });
+
+            // Enforce boundary conditions (Pinned supports displacement DOF = 0)
+            const activeDOFs = [];
+            const boundaryDOFs = supports.map(nodeIdx => nodeIdx * 2);
+
+            for (let d = 0; d < totalDOFs; d++) {
+                if (!boundaryDOFs.includes(d)) {
+                    activeDOFs.push(d);
+                }
+            }
+
+            // Solve reduced system of equations: K_reduced * U_reduced = F_reduced
+            const nReduced = activeDOFs.length;
+            const K_red = Array(nReduced).fill(0).map(() => Array(nReduced).fill(0));
+            const F_red = Array(nReduced).fill(0);
+
+            for (let i = 0; i < nReduced; i++) {
+                const rowDOF = activeDOFs[i];
+                F_red[i] = F[rowDOF];
+                for (let j = 0; j < nReduced; j++) {
+                    const colDOF = activeDOFs[j];
+                    K_red[i][j] = K[rowDOF][colDOF];
+                }
+            }
+
+            // Gaussian Elimination solver
+            const u_red = Array(nReduced).fill(0);
+            for (let i = 0; i < nReduced; i++) {
+                let pivotRow = i;
+                for (let r = i + 1; r < nReduced; r++) {
+                    if (Math.abs(K_red[r][i]) > Math.abs(K_red[pivotRow][i])) {
+                        pivotRow = r;
+                    }
+                }
+                const tempRow = K_red[i];
+                K_red[i] = K_red[pivotRow];
+                K_red[pivotRow] = tempRow;
+                const tempF = F_red[i];
+                F_red[i] = F_red[pivotRow];
+                F_red[pivotRow] = tempF;
+
+                for (let r = i + 1; r < nReduced; r++) {
+                    const factor = K_red[r][i] / K_red[i][i];
+                    for (let c = i; c < nReduced; c++) {
+                        K_red[r][c] -= factor * K_red[i][c];
+                    }
+                    F_red[r] -= factor * F_red[i];
+                }
+            }
+
+            for (let i = nReduced - 1; i >= 0; i--) {
+                let sum = 0;
+                for (let c = i + 1; c < nReduced; c++) {
+                    sum += K_red[i][c] * u_red[c];
+                }
+                u_red[i] = (F_red[i] - sum) / K_red[i][i];
+            }
+
+            // Reconstruct full displacement vector U
+            const U = Array(totalDOFs).fill(0);
+            for (let i = 0; i < nReduced; i++) {
+                U[activeDOFs[i]] = u_red[i];
+            }
+
+            // Post-process displacements to get internal elements reactions, shear and moment
+            const internalData = [];
+            const pts = 350;
+            const beamLengthMax = xNode[totalNodes - 1];
+
+            // Evaluate Shear (V) and Moment (M) at close intervals across the continuous beam
+            for (let i = 0; i <= pts; i++) {
+                const targetX = (beamLengthMax * i) / pts;
+                
+                // Find element index
+                let e = 0;
+                for (let idx = 0; idx < totalElements; idx++) {
+                    if (targetX >= xNode[idx] && targetX <= xNode[idx + 1]) {
+                        e = idx;
+                        break;
+                    }
+                }
+
+                const n1 = e;
+                const n2 = e + 1;
+                const Le = xNode[n2] - xNode[n1];
+                const xi = (targetX - xNode[n1]) / Le;
+
+                // Nodal displacements of this element
+                const v1 = U[n1 * 2];
+                const t1 = U[n1 * 2 + 1];
+                const v2 = U[n2 * 2];
+                const t2 = U[n2 * 2 + 1];
+
+                // Moment = E*I * curvature = E*I * d^2(N)/dx^2 * U^e
+                const d2N_dxi2 = [
+                    -6 + 12 * xi,
+                    (-4 + 6 * xi) * Le,
+                     6 - 12 * xi,
+                    (-2 + 6 * xi) * Le
+                ];
+                // Scale factor for second derivative mapping d^2/dx^2 = 1/Le^2 * d^2/dxi^2
+                const curvature = (v1 * d2N_dxi2[0] + t1 * d2N_dxi2[1] + v2 * d2N_dxi2[2] + t2 * d2N_dxi2[3]) / (Le * Le);
+                const M = EI * curvature;
+
+                // Shear = E*I * d^3(N)/dx^3 * U^e
+                const d3N_dxi3 = [
+                    12,
+                    6 * Le,
+                    -12,
+                    6 * Le
+                ];
+                const shearCurv = (v1 * d3N_dxi3[0] + t1 * d3N_dxi3[1] + v2 * d3N_dxi3[2] + t2 * d3N_dxi3[3]) / Math.pow(Le, 3);
+                let V = EI * shearCurv;
+
+                // Correct shear with local distributed load
+                let w_load = 0;
+                if (e < nElemSpan) w_load = w1;
+                else if (e < nElemSpan * 2) w_load = w2;
+                else if (e < nElemSpan * 3) w_load = w3;
+                else w_load = wc;
+
+                V += w_load * (targetX - xNode[n1] - Le / 2);
+
+                internalData.push({ x: targetX, V, M });
+            }
+
+            // Find critical envelope moments and shear across spans
+            const criticalResults = {
+                data: internalData,
+                totalL: beamLengthMax,
+                M_pos1_max: 0,
+                M_pos2_max: 0,
+                M_pos3_max: 0,
+                M_negB_max: 0,
+                M_negC_max: 0,
+                M_negD_max: 0,
+                V_A_right: 0,
+                V_B_left: 0,
+                V_B_right: 0,
+                V_C_left: 0,
+                V_C_right: 0,
+                V_D_left: 0,
+                V_D_right: 0
+            };
+
+            // Locate peak moments and shear
+            internalData.forEach(pt => {
+                if (pt.x <= L1) {
+                    if (pt.M > criticalResults.M_pos1_max) criticalResults.M_pos1_max = pt.M;
+                    if (Math.abs(pt.V) > criticalResults.V_A_right && pt.x < 0.2) criticalResults.V_A_right = Math.abs(pt.V);
+                    if (Math.abs(pt.V) > criticalResults.V_B_left && Math.abs(pt.x - L1) < 0.2) criticalResults.V_B_left = Math.abs(pt.V);
+                } else if (pt.x <= L1 + L2) {
+                    if (pt.M > criticalResults.M_pos2_max) criticalResults.M_pos2_max = pt.M;
+                    if (pt.M < criticalResults.M_negB_max) criticalResults.M_negB_max = pt.M;
+                    if (Math.abs(pt.V) > criticalResults.V_B_right && Math.abs(pt.x - L1) < 0.2) criticalResults.V_B_right = Math.abs(pt.V);
+                    if (Math.abs(pt.V) > criticalResults.V_C_left && Math.abs(pt.x - (L1 + L2)) < 0.2) criticalResults.V_C_left = Math.abs(pt.V);
+                } else if (pt.x <= L1 + L2 + L3) {
+                    if (pt.M > criticalResults.M_pos3_max) criticalResults.M_pos3_max = pt.M;
+                    if (pt.M < criticalResults.M_negC_max) criticalResults.M_negC_max = pt.M;
+                    if (Math.abs(pt.V) > criticalResults.V_C_right && Math.abs(pt.x - (L1 + L2)) < 0.2) criticalResults.V_C_right = Math.abs(pt.V);
+                    if (Math.abs(pt.V) > criticalResults.V_D_left && Math.abs(pt.x - (L1 + L2 + L3)) < 0.2) criticalResults.V_D_left = Math.abs(pt.V);
+                } else {
+                    if (pt.M < criticalResults.M_negD_max) criticalResults.M_negD_max = pt.M;
+                    if (Math.abs(pt.V) > criticalResults.V_D_right) criticalResults.V_D_right = Math.abs(pt.V);
+                }
+            });
+
+            // Ensure absolute support values are matched correctly to nodal solutions
+            return criticalResults;
+        }
+
+        function calculateBeam() {
+            document.getElementById("sigDesigner").innerText = document.getElementById("engineerName").value;
+
+            const L1 = parseFloat(L1_in.value);
+            const L2 = parseFloat(L2_in.value);
+            const L3 = parseFloat(L3_in.value);
+            const Lc = parseFloat(Lc_in.value);
+            const w1 = parseFloat(w1_in.value);
+            const w2 = parseFloat(w2_in.value);
+            const w3 = parseFloat(w3_in.value);
+            const wc = parseFloat(wc_in.value);
+            const hasCant = hasCantilever_in.checked;
+
+            const fc_raw = parseFloat(fc_in.value);
+            const fs_raw = parseFloat(fs_in.value);
+            const fv_raw = parseFloat(fv_in.value);
+
+            const b_cm = parseFloat(width_in.value);
+            const h_cm = parseFloat(height_in.value);
+            const cov_cm = parseFloat(cov_in.value);
+
+            let fc_ksc, fs_ksc, fv_ksc;
+            let w1_calc, w2_calc, w3_calc, wc_calc;
+            let L1_m = L1, L2_m = L2, L3_m = L3, Lc_m = hasCant ? Lc : 0;
+
+            // Gather Point Loads
+            const pointLoads = [];
+            if (unit_sys === "si") {
+                fc_ksc = fc_raw * 10;
+                fs_ksc = fs_raw * 10;
+                fv_ksc = fv_raw * 10;
+                w1_calc = w1 * 100;
+                w2_calc = w2 * 100;
+                w3_calc = w3 * 100;
+                wc_calc = wc * 100;
+
+                // Point loads conversion kN to kg (approx 1 kN = 101.97 kg)
+                pointLoads.push({ val: parseFloat(document.getElementById("p1_1").value) * 101.97, loc: parseFloat(document.getElementById("a1_1").value) });
+                pointLoads.push({ val: parseFloat(document.getElementById("p1_2").value) * 101.97, loc: parseFloat(document.getElementById("a1_2").value) });
+                pointLoads.push({ val: parseFloat(document.getElementById("p2_1").value) * 101.97, loc: L1 + parseFloat(document.getElementById("a2_1").value) });
+                pointLoads.push({ val: parseFloat(document.getElementById("p2_2").value) * 101.97, loc: L1 + parseFloat(document.getElementById("a2_2").value) });
+                pointLoads.push({ val: parseFloat(document.getElementById("p3_1").value) * 101.97, loc: L1 + L2 + parseFloat(document.getElementById("a3_1").value) });
+                pointLoads.push({ val: parseFloat(document.getElementById("p3_2").value) * 101.97, loc: L1 + L2 + parseFloat(document.getElementById("a3_2").value) });
+            } else {
+                fc_ksc = fc_raw;
+                fs_ksc = fs_raw;
+                fv_ksc = fv_raw;
+                w1_calc = w1;
+                w2_calc = w2;
+                w3_calc = w3;
+                wc_calc = wc;
+
+                pointLoads.push({ val: parseFloat(document.getElementById("p1_1").value), loc: parseFloat(document.getElementById("a1_1").value) });
+                pointLoads.push({ val: parseFloat(document.getElementById("p1_2").value), loc: parseFloat(document.getElementById("a1_2").value) });
+                pointLoads.push({ val: parseFloat(document.getElementById("p2_1").value), loc: L1 + parseFloat(document.getElementById("a2_1").value) });
+                pointLoads.push({ val: parseFloat(document.getElementById("p2_2").value), loc: L1 + parseFloat(document.getElementById("a2_2").value) });
+                pointLoads.push({ val: parseFloat(document.getElementById("p3_1").value), loc: L1 + L2 + parseFloat(document.getElementById("a3_1").value) });
+                pointLoads.push({ val: parseFloat(document.getElementById("p3_2").value), loc: L1 + L2 + parseFloat(document.getElementById("a3_2").value) });
+            }
+
+            // Run FEM Solver
+            const solver = solveContinuousBeamFEM(L1_m, L2_m, L3_m, Lc_m, w1_calc, w2_calc, w3_calc, wc_calc, pointLoads, hasCant);
+
+            // Calculate WSD Constants
+            const fc_allow = 0.375 * fc_ksc;
+            const fs_allow = fs_ksc;
+            const fv_allow = fv_ksc;
+
+            const n = Math.round(135 / Math.sqrt(fc_ksc));
+            const k_coeff = 1 / (1 + (fs_allow / (n * fc_allow)));
+            const j_coeff = 1 - (k_coeff / 3);
+            const R_coeff = 0.5 * fc_allow * k_coeff * j_coeff;
+
+            const d_cm = h_cm - cov_cm;
+            const Mc_kgcm = R_coeff * b_cm * Math.pow(d_cm, 2);
+            const Mc_kgm = Mc_kgcm / 100;
+
+            document.getElementById("val_n").innerText = n.toFixed(1);
+            document.getElementById("val_k").innerText = k_coeff.toFixed(3);
+            document.getElementById("val_j").innerText = j_coeff.toFixed(3);
+            document.getElementById("val_Mc").innerText = (Mc_kgm * (unit_sys === "si" ? 0.0098 : 1.0)).toFixed(1) + (unit_sys === "si" ? " kN·m" : " kg·m");
+
+            const stirrup_size = parseFloat(stirrupSize_in.value);
+            const stirrup_legs = parseInt(stirrupLegs_in.value);
+            const av_cm2 = stirrup_legs * ((Math.PI * Math.pow(stirrup_size / 10, 2)) / 4);
+
+            // Define critical sections
+            const designSections = [
+                { id: "A", name: "จุดรองรับ A (ซ้ายสุด)", M: 0, V: solver.V_A_right, isSupport: true },
+                { id: "span1", name: "กลางช่วงที่ 1 (" + document.getElementById("span1Name").value + ")", M: solver.M_pos1_max, V: Math.max(solver.V_A_right, solver.V_B_left)/2, isSupport: false },
+                { id: "B", name: "จุดรองรับ B (เสากลาง 1-2)", M: solver.M_negB_max, V: Math.max(solver.V_B_left, solver.V_B_right), isSupport: true },
+                { id: "span2", name: "กลางช่วงที่ 2 (" + document.getElementById("span2Name").value + ")", M: solver.M_pos2_max, V: Math.max(solver.V_B_right, solver.V_C_left)/2, isSupport: false },
+                { id: "C", name: "จุดรองรับ C (เสากลาง 2-3)", M: solver.M_negC_max, V: Math.max(solver.V_C_left, solver.V_C_right), isSupport: true },
+                { id: "span3", name: "กลางช่วงที่ 3 (" + document.getElementById("span3Name").value + ")", M: solver.M_pos3_max, V: Math.max(solver.V_C_right, solver.V_D_left)/2, isSupport: false },
+                { id: "D", name: "จุดรองรับ D (ขวาสุด)", M: solver.M_negD_max, V: Math.max(solver.V_D_left, solver.V_D_right), isSupport: true }
+            ];
+
+            if (hasCant) {
+                designSections.push({
+                    id: "cant", name: "ช่วงคานยื่น (" + document.getElementById("cantName").value + ")", M: solver.M_negD_max, V: solver.V_D_right, isSupport: true
+                });
+            }
+
+            const tableBody = document.getElementById("designTableBody");
+            tableBody.innerHTML = "";
+            const detailsGrid = document.getElementById("sectionDetailsGrid");
+            detailsGrid.innerHTML = "";
+
+            designSections.forEach(sec => {
+                const M_abs_kgm = Math.abs(sec.M);
+                const M_abs_kgcm = M_abs_kgm * 100;
+                const V_abs_kg = Math.abs(sec.V);
+
+                let As_tension_req = 0;
+                if (M_abs_kgm > 0.01) {
+                    if (M_abs_kgm <= Mc_kgm) {
+                        As_tension_req = M_abs_kgcm / (fs_allow * j_coeff * d_cm);
+                    } else {
+                        // Doubly reinforced
+                        const M1_kgcm = Mc_kgcm;
+                        const M2_kgcm = M_abs_kgcm - M1_kgcm;
+                        const As1 = M1_kgcm / (fs_allow * j_coeff * d_cm);
+                        const As2 = M2_kgcm / (fs_allow * (d_cm - cov_cm));
+                        As_tension_req = As1 + As2;
+                    }
+                }
+
+                const As_min = 0.0018 * b_cm * h_cm;
+                if (As_tension_req < As_min && sec.id !== "A") {
+                    As_tension_req = As_min;
+                }
+
+                const config = rebarConfig[sec.id];
+                const db = config.size;
+                const ab = (Math.PI * Math.pow(db / 10, 2)) / 4;
+
+                const totalTopCount = config.topL1 + config.topL2;
+                const totalBotCount = config.botL1 + config.botL2;
+                const topAs_provided = totalTopCount * ab;
+                const botAs_provided = totalBotCount * ab;
+
+                const isTensionTop = (sec.isSupport && sec.id !== "A") || sec.id === "cant";
+                const As_provided = isTensionTop ? topAs_provided : botAs_provided;
+
+                const isPassed = As_provided >= As_tension_req;
+                const statusBadge = isPassed 
+                    ? `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold text-[10px]">ผ่าน (PASS)</span>`
+                    : `<span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full font-bold text-[10px]">ไม่ผ่าน (FAIL)</span>`;
+
+                // Stirrup
+                const nominal_shear = V_abs_kg / (b_cm * d_cm);
+                const vc = 0.29 * Math.sqrt(fc_ksc);
+                let stirrup_text = "";
+                let spacing = 20;
+
+                if (nominal_shear <= vc) {
+                    spacing = Math.min(d_cm / 2, 30);
+                    stirrup_text = `@${spacing.toFixed(0)} ซม. (Min)`;
+                } else {
+                    const vs = nominal_shear - vc;
+                    spacing = (av_cm2 * fv_allow) / (vs * b_cm);
+                    const max_s = Math.min(d_cm / 2, 30);
+                    spacing = Math.min(spacing, max_s);
+                    stirrup_text = `@${spacing.toFixed(0)} ซม. (Str)`;
+                }
+
+                // Display formatting
+                const display_M = (sec.M * (unit_sys === "si" ? 0.0098 : 1.0)).toFixed(1) + (unit_sys === "si" ? " kN·m" : " kg·m");
+                const topText = `ชั้น1: ${config.topL1}DB${db} + ชั้น2: ${config.topL2}DB${db}`;
+                const botText = `ชั้น1: ${config.botL1}DB${db} + ชั้น2: ${config.botL2}DB${db}`;
+
+                const row = document.createElement("tr");
+                row.className = "border-b border-slate-100 hover:bg-slate-50";
+                row.innerHTML = `
+                    <td class="p-1 font-medium text-slate-800">${sec.name}</td>
+                    <td class="p-1">${display_M}</td>
+                    <td class="p-1 font-semibold text-slate-600">${As_tension_req.toFixed(2)} cm²</td>
+                    <td class="p-1 text-rose-700">${topText}</td>
+                    <td class="p-1 text-emerald-700">${botText}</td>
+                    <td class="p-1 font-bold">${As_provided.toFixed(2)} cm²</td>
+                    <td class="p-1 text-center">${statusBadge}</td>
+                `;
+                tableBody.appendChild(row);
+
+                // Section Blueprint SVG
+                const crossSecSvg = draw2LayerCrossSection(b_cm, h_cm, cov_cm, config, stirrup_size, sec.name, isTensionTop, As_tension_req, As_provided, isPassed);
+                detailsGrid.appendChild(crossSecSvg);
+            });
+
+            // Draw elevation and load distribution graphs
+            drawElevationBeam(solver, L1_m, L2_m, L3_m, Lc_m, w1_calc, w2_calc, w3_calc, wc_calc, pointLoads, hasCant);
+
+            // Detailed calculation sheets
+            renderDetailedReport(solver, b_cm, h_cm, d_cm, n, k_coeff, j_coeff, R_coeff, fc_ksc, fs_ksc, hasCant, Mc_kgm);
+        }
+
+        // SVG detailed 2-layer section blueprint drawer
+        function draw2LayerCrossSection(b, h, cover, config, stirrup_d, title, isTensionTop, As_req, As_prov, isPassed) {
+            const wrapper = document.createElement("div");
+            wrapper.className = `p-2 rounded-lg border text-center transition-all ${isPassed ? 'bg-slate-50 border-slate-200' : 'bg-rose-50 border-rose-300'}`;
+
+            const scale = 140 / Math.max(b, h);
+            const w_svg = b * scale;
+            const h_svg = h * scale;
+            const offset_x = (170 - w_svg) / 2;
+            const offset_y = (170 - h_svg) / 2;
+
+            const db_mm = config.size;
+            const r_px = (scale * db_mm) / 20;
+
+            function generateLayerCircles(count, y_pos, color, isSpecialLayer) {
+                let circles = "";
+                if (count <= 0) return circles;
+                for (let i = 0; i < count; i++) {
+                    const cx = offset_x + 12 + (i * (w_svg - 24) / Math.max(1, count - 1));
+                    circles += `
+                        <circle cx="${cx}" cy="${y_pos}" r="${r_px}" fill="${color}" stroke="#334155" stroke-width="0.8" />
+                        ${isSpecialLayer ? `<circle cx="${cx}" cy="${y_pos}" r="${r_px/2}" fill="#ffffff" />` : ""}
+                    `;
+                }
+                return circles;
+            }
+
+            const y_top_L1 = offset_y + 12;
+            const y_top_L2 = offset_y + 12 + Math.max(r_px * 2.8, 12);
+            const y_bot_L1 = offset_y + h_svg - 12;
+            const y_bot_L2 = offset_y + h_svg - 12 - Math.max(r_px * 2.8, 12);
+
+            const topL1Circles = generateLayerCircles(config.topL1, y_top_L1, "#ef4444", false);
+            const topL2Circles = generateLayerCircles(config.topL2, y_top_L2, "#fca5a5", true);
+            const botL1Circles = generateLayerCircles(config.botL1, y_bot_L1, "#10b981", false);
+            const botL2Circles = generateLayerCircles(config.botL2, y_bot_L2, "#6ee7b7", true);
+
+            wrapper.innerHTML = `
+                <span class="text-[9px] font-bold text-slate-700 block mb-1 truncate">${title}</span>
+                <svg width="170" height="170" class="mx-auto bg-white rounded border">
+                    <rect x="${offset_x}" y="${offset_y}" width="${w_svg}" height="${h_svg}" fill="#f1f5f9" stroke="#475569" stroke-width="2" />
+                    <rect x="${offset_x + 8}" y="${offset_y + 8}" width="${w_svg - 16}" height="${h_svg - 16}" fill="none" stroke="#fbbf24" stroke-width="1.8" rx="3" />
+                    ${topL1Circles}
+                    ${topL2Circles}
+                    ${botL1Circles}
+                    ${botL2Circles}
+                    <text x="85" y="${offset_y + h_svg + 14}" font-size="8" font-weight="600" text-anchor="middle" fill="#475569">${b}x${h} ซม.</text>
+                </svg>
+                <div class="mt-1 space-y-0.5 text-[8px] border-t pt-1">
+                    <span class="text-rose-600 block">บน ชั้น1:${config.topL1} ชั้น2:${config.topL2}</span>
+                    <span class="text-emerald-600 block">ล่าง ชั้น1:${config.botL1} ชั้น2:${config.botL2}</span>
+                    <div class="flex justify-between px-1 bg-slate-100 py-0.5 rounded font-bold mt-1 text-[8px]">
+                        <span>Req: ${As_req.toFixed(2)} cm²</span>
+                        <span class="${isPassed ? 'text-emerald-700' : 'text-rose-700'}">Prov: ${As_prov.toFixed(2)} cm²</span>
+                    </div>
+                </div>
+            `;
+            return wrapper;
+        }
+
+        // SVG continuous model diagram rendering
+        function drawElevationBeam(solver, L1, L2, L3, Lc, w1, w2, w3, wc, pointLoads, hasCant) {
+            const svg = document.getElementById("beamSvg");
+            svg.innerHTML = "";
+
+            const padLeft = 70;
+            const padRight = 70;
+            const drawW = 850 - padLeft - padRight;
+            const totalLength = L1 + L2 + L3 + Lc;
+
+            const x0 = padLeft;
+            const x1 = padLeft + (L1 / totalLength) * drawW;
+            const x2 = padLeft + ((L1 + L2) / totalLength) * drawW;
+            const x3 = padLeft + ((L1 + L2 + L3) / totalLength) * drawW;
+            const x4 = padLeft + drawW;
+
+            const y_beam = 80;
+
+            // Names of spans
+            const name1 = document.getElementById("span1Name").value;
+            const name2 = document.getElementById("span2Name").value;
+            const name3 = document.getElementById("span3Name").value;
+            const nameC = document.getElementById("cantName").value;
+
+            svg.innerHTML += `
+                <!-- Beam Profile -->
+                <rect x="${x0}" y="${y_beam}" width="${drawW}" height="12" fill="#cbd5e1" stroke="#475569" stroke-width="1" rx="2" />
+                
+                <!-- Support Triangles -->
+                <polygon points="${x0},${y_beam+12} ${x0-8},${y_beam+25} ${x0+8},${y_beam+25}" fill="#0ea5e9" />
+                <circle cx="${x0}" cy="${y_beam+15}" r="2.5" fill="#0f172a" />
+                <text x="${x0}" y="${y_beam+35}" font-size="10" font-weight="bold" fill="#0ea5e9" text-anchor="middle">A</text>
+
+                <polygon points="${x1},${y_beam+12} ${x1-8},${y_beam+25} ${x1+8},${y_beam+25}" fill="#0ea5e9" />
+                <circle cx="${x1}" cy="${y_beam+15}" r="2.5" fill="#0f172a" />
+                <text x="${x1}" y="${y_beam+35}" font-size="10" font-weight="bold" fill="#0ea5e9" text-anchor="middle">B</text>
+
+                <polygon points="${x2},${y_beam+12} ${x2-8},${y_beam+25} ${x2+8},${y_beam+25}" fill="#0ea5e9" />
+                <circle cx="${x2}" cy="${y_beam+15}" r="2.5" fill="#0f172a" />
+                <text x="${x2}" y="${y_beam+35}" font-size="10" font-weight="bold" fill="#0ea5e9" text-anchor="middle">C</text>
+
+                <polygon points="${x3},${y_beam+12} ${x3-8},${y_beam+25} ${x3+8},${y_beam+25}" fill="#0ea5e9" />
+                <circle cx="${x3}" cy="${y_beam+15}" r="2.5" fill="#0f172a" />
+                <text x="${x3}" y="${y_beam+35}" font-size="10" font-weight="bold" fill="#0ea5e9" text-anchor="middle">D</text>
+
+                <!-- Span Names & Dimensions -->
+                <text x="${(x0+x1)/2}" y="${y_beam - 10}" font-size="9" font-weight="bold" fill="#38bdf8" text-anchor="middle">${name1}</text>
+                <text x="${(x0+x1)/2}" y="${y_beam + 28}" font-size="8" fill="#94a3b8" text-anchor="middle">L1 = ${L1.toFixed(1)} m</text>
+                
+                <text x="${(x1+x2)/2}" y="${y_beam - 10}" font-size="9" font-weight="bold" fill="#38bdf8" text-anchor="middle">${name2}</text>
+                <text x="${(x1+x2)/2}" y="${y_beam + 28}" font-size="8" fill="#94a3b8" text-anchor="middle">L2 = ${L2.toFixed(1)} m</text>
+
+                <text x="${(x2+x3)/2}" y="${y_beam - 10}" font-size="9" font-weight="bold" fill="#38bdf8" text-anchor="middle">${name3}</text>
+                <text x="${(x2+x3)/2}" y="${y_beam + 28}" font-size="8" fill="#94a3b8" text-anchor="middle">L3 = ${L3.toFixed(1)} m</text>
+            `;
+
+            if (hasCant) {
+                svg.innerHTML += `
+                    <text x="${(x3+x4)/2}" y="${y_beam - 10}" font-size="9" font-weight="bold" fill="#fbbf24" text-anchor="middle">${nameC}</text>
+                    <text x="${(x3+x4)/2}" y="${y_beam + 28}" font-size="8" fill="#fbbf24" text-anchor="middle">Lc = ${Lc.toFixed(1)} m</text>
+                `;
+            }
+
+            // Uniform Loads Graphic Bars
+            svg.innerHTML += `
+                <line x1="${x0}" y1="${y_beam-22}" x2="${x1}" y2="${y_beam-22}" stroke="#f87171" stroke-dasharray="2" stroke-width="1.2" />
+                <text x="${(x0+x1)/2}" y="${y_beam-26}" font-size="8" fill="#f87171" text-anchor="middle">w1 = ${(unit_sys==='si'?w1/100:w1)}</text>
+                
+                <line x1="${x1}" y1="${y_beam-22}" x2="${x2}" y2="${y_beam-22}" stroke="#f87171" stroke-dasharray="2" stroke-width="1.2" />
+                <text x="${(x1+x2)/2}" y="${y_beam-26}" font-size="8" fill="#f87171" text-anchor="middle">w2 = ${(unit_sys==='si'?w2/100:w2)}</text>
+
+                <line x1="${x2}" y1="${y_beam-22}" x2="${x3}" y2="${y_beam-22}" stroke="#f87171" stroke-dasharray="2" stroke-width="1.2" />
+                <text x="${(x2+x3)/2}" y="${y_beam-26}" font-size="8" fill="#f87171" text-anchor="middle">w3 = ${(unit_sys==='si'?w3/100:w3)}</text>
+            `;
+
+            if (hasCant) {
+                svg.innerHTML += `
+                    <line x1="${x3}" y1="${y_beam-22}" x2="${x4}" y2="${y_beam-22}" stroke="#fbbf24" stroke-dasharray="2" stroke-width="1.2" />
+                    <text x="${(x3+x4)/2}" y="${y_beam-26}" font-size="8" fill="#fbbf24" text-anchor="middle">wc = ${(unit_sys==='si'?wc/100:wc)}</text>
+                `;
+            }
+
+            // Draw Point Loads Arrows on beam elevation
+            const pScale = unit_sys === "si" ? 0.0098 : 1.0;
+            pointLoads.forEach(pl => {
+                if (pl.val <= 0) return;
+                const plX = padLeft + (pl.loc / totalLength) * drawW;
+                svg.innerHTML += `
+                    <!-- Arrow Line -->
+                    <line x1="${plX}" y1="${y_beam-50}" x2="${plX}" y2="${y_beam-2}" stroke="#f59e0b" stroke-width="2" />
+                    <!-- Arrow head -->
+                    <polygon points="${plX},${y_beam-2} ${plX-4},${y_beam-10} ${plX+4},${y_beam-10}" fill="#f59e0b" />
+                    <!-- Load magnitude label -->
+                    <text x="${plX}" y="${y_beam-54}" font-size="8" font-weight="bold" fill="#f59e0b" text-anchor="middle">${(pl.val * pScale).toFixed(0)} ${(unit_sys==='si'?'kN':'kg')}</text>
+                `;
+            });
+
+            // Draw SFD Diagram
+            const y_sfd = 195;
+            const maxV = Math.max(...solver.data.map(d => Math.abs(d.V)), 1);
+            const scaleV = 35 / maxV;
+
+            svg.innerHTML += `
+                <line x1="${padLeft}" y1="${y_sfd}" x2="${850-padRight}" y2="${y_sfd}" stroke="#475569" stroke-width="1" />
+                <text x="35" y="${y_sfd+4}" font-size="9" fill="#94a3b8">SFD</text>
+            `;
+
+            let sfd_path = `M ${padLeft} ${y_sfd}`;
+            solver.data.forEach(pt => {
+                const screenX = padLeft + (pt.x / totalLength) * drawW;
+                const screenY = y_sfd - pt.V * scaleV;
+                sfd_path += ` L ${screenX} ${screenY}`;
+            });
+            sfd_path += ` L ${x4} ${y_sfd} Z`;
+            svg.innerHTML += `<path d="${sfd_path}" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="1.2" />`;
+
+            // Draw BMD Diagram
+            const y_bmd = 320;
+            const maxM = Math.max(...solver.data.map(d => Math.abs(d.M)), 1);
+            const scaleM = 40 / maxM;
+
+            svg.innerHTML += `
+                <line x1="${padLeft}" y1="${y_bmd}" x2="${850-padRight}" y2="${y_bmd}" stroke="#475569" stroke-width="1" />
+                <text x="35" y="${y_bmd+4}" font-size="9" fill="#94a3b8">BMD</text>
+            `;
+
+            let bmd_path = `M ${padLeft} ${y_bmd}`;
+            solver.data.forEach(pt => {
+                const screenX = padLeft + (pt.x / totalLength) * drawW;
+                const screenY = y_bmd + pt.M * scaleM; 
+                bmd_path += ` L ${screenX} ${screenY}`;
+            });
+            bmd_path += ` L ${x4} ${y_bmd} Z`;
+            svg.innerHTML += `<path d="${bmd_path}" fill="rgba(16, 185, 129, 0.08)" stroke="#10b981" stroke-width="1.2" />`;
+
+            // BMD Critical values labels
+            const unitM = unit_sys === "si" ? " kN·m" : " kg·m";
+            const scaleFactor = unit_sys === "si" ? 0.0098 : 1.0;
+
+            const m1_label = (solver.M_pos1_max * scaleFactor).toFixed(0) + unitM;
+            const m2_label = (solver.M_pos2_max * scaleFactor).toFixed(0) + unitM;
+            const m3_label = (solver.M_pos3_max * scaleFactor).toFixed(0) + unitM;
+            const mb_label = (solver.M_negB_max * scaleFactor).toFixed(0) + unitM;
+            const mc_label = (solver.M_negC_max * scaleFactor).toFixed(0) + unitM;
+            const md_label = (solver.M_negD_max * scaleFactor).toFixed(0) + unitM;
+
+            svg.innerHTML += `
+                <text x="${x0 + (x1-x0)/2}" y="${y_bmd + 22}" font-size="8" fill="#10b981" text-anchor="middle">M(+) = ${m1_label}</text>
+                <text x="${x1 + (x2-x1)/2}" y="${y_bmd + 22}" font-size="8" fill="#10b981" text-anchor="middle">M(+) = ${m2_label}</text>
+                <text x="${x2 + (x3-x2)/2}" y="${y_bmd + 22}" font-size="8" fill="#10b981" text-anchor="middle">M(+) = ${m3_label}</text>
+                <text x="${x1}" y="${y_bmd - 12}" font-size="8" fill="#f97316" text-anchor="middle">M(-) = ${mb_label}</text>
+                <text x="${x2}" y="${y_bmd - 12}" font-size="8" fill="#f97316" text-anchor="middle">M(-) = ${mc_label}</text>
+            `;
+
+            if (hasCant) {
+                svg.innerHTML += `<text x="${x3}" y="${y_bmd - 12}" font-size="8" fill="#f97316" text-anchor="middle">M(-) = ${md_label}</text>`;
+            }
+        }
+
+        // Detailed structural design equations report compiler
+        function renderDetailedReport(solver, b, h, d, n, k, j, R, fc, fs, hasCant, Mc) {
+            const report = document.getElementById("calculationBreakdown");
+            report.innerHTML = "";
+
+            const muM = unit_sys === "si" ? " kN·m" : " kg·m";
+            const muS = unit_sys === "si" ? " MPa" : " ksc";
+            const conv = unit_sys === "si" ? 0.0098 : 1.0;
+
+            const step1 = `
+                <div class="p-3 bg-slate-50 rounded border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-1 border-b border-slate-300 pb-0.5 flex justify-between">
+                        <span>1. ข้อมูลทางกลศาสตร์และสัมประสิทธิ์ WSD (ตามมาตรฐาน วสท.)</span>
+                        <span class="text-[9px] text-slate-400">ขั้นตอนที่ 1</span>
+                    </h4>
+                    <p class="leading-relaxed text-[11px]">
+                        • กำลังคอนกรีตยอมใช้งาน fc = 0.375 × fc' = 0.375 × ${fc} = ${(0.375*fc).toFixed(1)} ${muS} <br>
+                        • อัตราส่วนโมดูลัสประสิทธิผล n = ${n} (คำนวณจาก Es ÷ Ec)<br>
+                        • ตัวแปรระยะแกนสะเทิน k = 1 ÷ [ 1 + (fs ÷ (n × fc)) ] = 1 ÷ [ 1 + (${fs} ÷ (${n} × ${(0.375*fc).toFixed(1)})) ] = <b>${k.toFixed(3)}</b><br>
+                        • สัมประสิทธิ์ระยะแขนโมเมนต์คาน j = 1 - (k ÷ 3) = 1 - (${k.toFixed(3)} ÷ 3) = <b>${j.toFixed(3)}</b><br>
+                        • สัมประสิทธิ์ความต้านทาน R = 0.5 × fc × k × j = 0.5 × ${(0.375*fc).toFixed(1)} × ${k.toFixed(3)} × ${j.toFixed(3)} = <b>${R.toFixed(2)}</b> ${muS}
+                    </p>
+                </div>
+            `;
+
+            const step2 = `
+                <div class="p-3 bg-slate-50 rounded border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-1 border-b border-slate-300 pb-0.5 flex justify-between">
+                        <span>2. การวิเคราะห์โมเมนต์ต้านทานของหน้าตัดคอนกรีตล้วน</span>
+                        <span class="text-[9px] text-slate-400">ขั้นตอนที่ 2</span>
+                    </h4>
+                    <p class="leading-relaxed text-[11px]">
+                        • ขนาดหน้าตัดความกว้าง b = ${b} ซม. | ความลึกรวม h = ${h} ซม. | ระยะประสิทธิผล d = ${d} ซม. <br>
+                        • โมเมนต์ดัดต้านทานสูงสุดของเหล็กเดี่ยว (Singly Reinforced Limit) : <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Mc = R × b × d² = ${R.toFixed(2)} × ${b} × ${d}² = <b>${(R * b * d * d / 100).toFixed(1)}</b> kg·m [ ${(R * b * d * d / 100 * 0.0098).toFixed(1)} kN·m ] <br>
+                        • หากโมเมนต์ลบหรือบวกที่กระทำสูงกว่าเกณฑ์ Mc นี้ ระบบจะถูกพิจารณาด้วยการเสริมเหล็กรับแรงอัดแบบคู่ (Doubly Reinforced)
+                    </p>
+                </div>
+            `;
+
+            report.innerHTML = step1 + step2;
+        }
+
+        window.onload = function() {
+            renderRebarControls();
+            calculateBeam();
+        }
+    </script>
+</body>
+</html>

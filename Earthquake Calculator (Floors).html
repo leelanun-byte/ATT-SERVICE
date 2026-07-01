@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำนวณแรงแผ่นดินไหวแยกชั้น มยผ.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            width: 100%;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .result-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .result-unit {
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        .floors-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .floors-section h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .floor-input {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .floor-input h4 {
+            color: #667eea;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .floor-input .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-add-floor {
+            background: #4CAF50;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .btn-add-floor:hover {
+            background: #45a049;
+        }
+
+        .btn-remove-floor {
+            padding: 6px 12px;
+            background: #f44336;
+            color: white;
+            font-size: 12px;
+            width: auto;
+            margin-top: 10px;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+
+        table th {
+            background: #f5f5f5;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .chart-container h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .chart-bar {
+            display: flex;
+            margin-bottom: 12px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-label {
+            width: 80px;
+            text-align: right;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .chart-fill {
+            height: 25px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .chart-value {
+            width: 80px;
+            text-align: right;
+            font-size: 12px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .floor-input .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-box {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .formula-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #667eea;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .formula-box strong {
+            color: #667eea;
+        }
+
+        .empty-floors {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 คำนวณแรงแผ่นดินไหว แยกชั้น</h1>
+            <p>ตามมาตรฐาน มยผ. (Thailand Building Code)</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Left Panel - Input -->
+            <div class="card">
+                <h3 style="margin-bottom: 20px; color: #333;">📝 พารามิเตอร์อาคาร</h3>
+
+                <div class="form-group">
+                    <label>ชื่อโครงการ *</label>
+                    <input type="text" id="projectName" placeholder="เช่น อพ.เมืองทอง">
+                </div>
+
+                <div class="form-group">
+                    <label>เขตแผ่นดินไหว (Z) *</label>
+                    <select id="seismicZone" onchange="calculateAll()">
+                        <option value="0.25">เขต 1: 0.25</option>
+                        <option value="0.35" selected>เขต 2: 0.35</option>
+                        <option value="0.45">เขต 3: 0.45</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ตัวประกอบความสำคัญ (I) *</label>
+                        <select id="importance" onchange="calculateAll()">
+                            <option value="0.8">0.8 - ทั่วไป</option>
+                            <option value="1.0" selected>1.0 - สำคัญ</option>
+                            <option value="1.25">1.25 - วิกฤต</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ตัวประกอบ R *</label>
+                        <select id="modification" onchange="calculateAll()">
+                            <option value="2.0">2.0</option>
+                            <option value="3.5">3.5</option>
+                            <option value="4.0" selected>4.0</option>
+                            <option value="5.5">5.5</option>
+                            <option value="8.0">8.0</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>ค่า C ที่กำหนด (ไม่บังคับ)</label>
+                    <input type="number" id="customC" step="0.001" placeholder="ว่างไว้ให้คำนวณ" onchange="calculateAll()">
+                </div>
+
+                <div class="form-group">
+                    <label>น้ำหนักรวมทั้งอาคาร (ตัน)</label>
+                    <input type="number" id="totalWeight" readonly style="background: #f0f0f0; cursor: not-allowed;">
+                </div>
+
+                <div class="result-box">
+                    <div class="result-label">แรงตัดที่ฐาน</div>
+                    <div class="result-value" id="baseShearResult">0</div>
+                    <div class="result-unit">ตัน</div>
+                </div>
+
+                <div class="formula-box">
+                    <strong>สูตร:</strong><br>
+                    V = C × W<br><br>
+                    <strong>C = (Z/2.5) × (I/R) ≤ 0.12</strong><br><br>
+                    <div style="color: #667eea; margin-top: 10px;">
+                        <strong>ค่า C ปัจจุบัน:</strong> <span id="currentC">0.0000</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Floors -->
+            <div>
+                <div class="floors-section">
+                    <h3>🏗️ ข้อมูลแต่ละชั้น</h3>
+                    <button class="btn-add-floor" onclick="addFloor()">➕ เพิ่มชั้น</button>
+
+                    <div id="floorsContainer" class="empty-floors">
+                        ยังไม่มีชั้น คลิก "เพิ่มชั้น" เพื่อเริ่มต้น
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="chart-container" id="summarySection" style="display: none;">
+                    <div class="summary-box">
+                        <div class="summary-item">
+                            <div class="summary-label">น้ำหนักรวม (W)</div>
+                            <div class="summary-value" id="summaryTotalWeight">0</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Σ(wi × hi)</div>
+                            <div class="summary-value" id="summaryWeightHeight">0</div>
+                        </div>
+                    </div>
+
+                    <h3>📊 การกระจายแรงแผ่นดินไหว</h3>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">ชั้น</th>
+                                <th style="width: 12%;">น้ำหนัก (ตัน)</th>
+                                <th style="width: 12%;">ความสูง (ม.)</th>
+                                <th style="width: 15%;">w×h</th>
+                                <th style="width: 15%;">Ratio (%)</th>
+                                <th style="text-align: right; width: 18%;">แรง (ตัน)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTable">
+                        </tbody>
+                    </table>
+
+                    <h3 style="margin-top: 30px; margin-bottom: 15px;">📈 กราฟแรงแผ่นดินไหวต่อชั้น</h3>
+                    <div id="chartContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let floors = [];
+        let floorIdCounter = 1;
+
+        function addFloor() {
+            const floorNum = floors.length + 1;
+            const id = floorIdCounter++;
+
+            floors.push({
+                id: id,
+                name: `ชั้นที่ ${floorNum}`,
+                weight: 0,
+                height: 0
+            });
+
+            renderFloors();
+            calculateAll();
+        }
+
+        function removeFloor(id) {
+            floors = floors.filter(f => f.id !== id);
+            if (floors.length === 0) {
+                floorIdCounter = 1;
+            }
+            renderFloors();
+            calculateAll();
+        }
+
+        function renderFloors() {
+            const container = document.getElementById('floorsContainer');
+
+            if (floors.length === 0) {
+                container.innerHTML = '<div class="empty-floors">ยังไม่มีชั้น คลิก "เพิ่มชั้น" เพื่อเริ่มต้น</div>';
+                return;
+            }
+
+            container.innerHTML = floors.map((floor, index) => `
+                <div class="floor-input">
+                    <h4>ชั้นที่ ${index + 1}</h4>
+                    <div class="form-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>น้ำหนัก (ตัน)</label>
+                            <input type="number" 
+                                   value="${floor.weight}" 
+                                   onchange="updateFloor(${floor.id}, 'weight', this.value)"
+                                   oninput="updateFloor(${floor.id}, 'weight', this.value)">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>ความสูง (ม.)</label>
+                            <input type="number" 
+                                   step="0.5"
+                                   value="${floor.height}" 
+                                   onchange="updateFloor(${floor.id}, 'height', this.value)"
+                                   oninput="updateFloor(${floor.id}, 'height', this.value)">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>w × h</label>
+                            <input type="number" readonly style="background: #f0f0f0;" value="${(floor.weight * floor.height).toFixed(2)}">
+                        </div>
+                    </div>
+                    <button class="btn-remove-floor" onclick="removeFloor(${floor.id})">🗑️ ลบชั้น</button>
+                </div>
+            `).join('');
+        }
+
+        function updateFloor(id, field, value) {
+            const floor = floors.find(f => f.id === id);
+            if (floor) {
+                floor[field] = parseFloat(value) || 0;
+                renderFloors();
+                calculateAll();
+            }
+        }
+
+        function calculateAll() {
+            const zone = parseFloat(document.getElementById('seismicZone').value);
+            const importance = parseFloat(document.getElementById('importance').value);
+            const modification = parseFloat(document.getElementById('modification').value);
+            const customC = document.getElementById('customC').value;
+
+            // คำนวณ C
+            let C;
+            if (customC && customC !== '') {
+                C = parseFloat(customC);
+            } else {
+                C = Math.min((zone / 2.5) * (importance / modification), 0.12);
+            }
+
+            // คำนวณน้ำหนักรวม
+            const totalWeight = floors.reduce((sum, f) => sum + parseFloat(f.weight), 0);
+
+            // คำนวณ Base Shear
+            const baseShear = C * totalWeight;
+
+            // คำนวณ Σ(wi × hi)
+            const sumWeightHeight = floors.reduce((sum, f) => sum + (parseFloat(f.weight) * parseFloat(f.height)), 0);
+
+            // อัปเดตผลลัพธ์
+            document.getElementById('totalWeight').value = totalWeight.toFixed(2);
+            document.getElementById('baseShearResult').textContent = baseShear.toFixed(2);
+            document.getElementById('currentC').textContent = C.toFixed(4);
+            document.getElementById('summaryTotalWeight').textContent = totalWeight.toFixed(2);
+            document.getElementById('summaryWeightHeight').textContent = sumWeightHeight.toFixed(2);
+
+            // คำนวณแรงต่อชั้น
+            renderResults(baseShear, sumWeightHeight);
+
+            // แสดง/ซ่อน summary section
+            if (floors.length > 0 && totalWeight > 0) {
+                document.getElementById('summarySection').style.display = 'block';
+            } else {
+                document.getElementById('summarySection').style.display = 'none';
+            }
+        }
+
+        function renderResults(baseShear, sumWeightHeight) {
+            const tbody = document.getElementById('resultsTable');
+            const chartContainer = document.getElementById('chartContainer');
+
+            if (floors.length === 0 || sumWeightHeight === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">ไม่มีข้อมูลการคำนวณ</td></tr>';
+                chartContainer.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            let chartHtml = '';
+
+            floors.forEach((floor, index) => {
+                const weightHeight = floor.weight * floor.height;
+                const ratio = (weightHeight / sumWeightHeight) * 100;
+                const force = baseShear * (weightHeight / sumWeightHeight);
+
+                html += `
+                    <tr>
+                        <td>ชั้น ${index + 1}</td>
+                        <td>${floor.weight.toFixed(2)}</td>
+                        <td>${floor.height.toFixed(2)}</td>
+                        <td>${weightHeight.toFixed(2)}</td>
+                        <td>${ratio.toFixed(2)}%</td>
+                        <td style="text-align: right; font-weight: 600; color: #667eea;">${force.toFixed(2)}</td>
+                    </tr>
+                `;
+
+                const maxForce = Math.max(...floors.map(f => {
+                    const wh = f.weight * f.height;
+                    return baseShear * (wh / sumWeightHeight);
+                }));
+
+                const percentage = (force / maxForce) * 100;
+
+                chartHtml += `
+                    <div class="chart-bar">
+                        <div class="chart-label">ชั้น ${index + 1}</div>
+                        <div class="chart-fill" style="width: ${percentage}%;">
+                            ${force.toFixed(2)}
+                        </div>
+                        <div class="chart-value">${force.toFixed(2)} ตัน</div>
+                    </div>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            chartContainer.innerHTML = chartHtml;
+        }
+
+        // โหลดจาก localStorage
+        function loadData() {
+            const saved = localStorage.getItem('earthquakeFloorsData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                floors = data.floors || [];
+                floorIdCounter = data.floorIdCounter || 1;
+
+                if (floors.length > 0) {
+                    document.getElementById('projectName').value = data.projectName || '';
+                    document.getElementById('seismicZone').value = data.seismicZone || '0.35';
+                    document.getElementById('importance').value = data.importance || '1.0';
+                    document.getElementById('modification').value = data.modification || '4.0';
+                    document.getElementById('customC').value = data.customC || '';
+
+                    renderFloors();
+                    calculateAll();
+                }
+            }
+        }
+
+        // บันทึก localStorage
+        function saveData() {
+            const data = {
+                projectName: document.getElementById('projectName').value,
+                seismicZone: document.getElementById('seismicZone').value,
+                importance: document.getElementById('importance').value,
+                modification: document.getElementById('modification').value,
+                customC: document.getElementById('customC').value,
+                floors: floors,
+                floorIdCounter: floorIdCounter
+            };
+            localStorage.setItem('earthquakeFloorsData', JSON.stringify(data));
+        }
+
+        // Auto-save ทุกครั้งที่มีการเปลี่ยนแปลง
+        document.addEventListener('change', saveData);
+        document.addEventListener('input', saveData);
+
+        // โหลดข้อมูลเมื่อเปิดหน้า
+        loadData();
+    </script>
+</body>
+</html>
